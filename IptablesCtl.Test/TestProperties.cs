@@ -40,6 +40,12 @@ namespace IptablesCtl.Test
         }
 
         [Fact]
+        public void TestMacProperties()
+        {
+            Assert.Equal(new byte[]{1,2,15,164,52,1}, "01:02:0F:A4:34:01".ParseMacaddr());
+        }
+
+        [Fact]
         public void TestParseIpProtoRange()
         {
             uint minIp = 2344, maxIp = 5589;

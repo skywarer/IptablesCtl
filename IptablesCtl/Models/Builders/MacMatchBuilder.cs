@@ -49,7 +49,14 @@ namespace IptablesCtl.Models.Builders
 
         public override MacOptions BuildNative()
         {
-            throw new NotImplementedException();
+            var match = Build();
+            MacOptions opt = new MacOptions();
+            if(match.TryGetOption(MAC_SOURCE_OPT,out var options))
+            {
+                opt.srcaddr = options.Value.ParseMacaddr();
+                if(options.Inverted) opt.invert |= MacOptions.XT_MAC_INV;
+            }
+            return opt;
         }
 
     }

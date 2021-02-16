@@ -49,7 +49,7 @@ namespace IptablesCtl.Models
 
         public static byte[] ParseMacaddr(this string prop)
         {
-            return prop.Split(':').Select(s => byte.Parse(s)).ToArray();
+            return prop.Split(':').Select(s => byte.Parse(s, System.Globalization.NumberStyles.HexNumber)).ToArray();
         }
 
         public static MaskedProperty ParseMasked(this string prop, char delim)

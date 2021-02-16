@@ -327,5 +327,28 @@ namespace IptablesCtl.Test
             }            
         }
 
+        [Fact]
+        public void WriteMacMatch()
+        {
+            var macMatch = new MacMatchBuilder().SetMacaddress("01:02:0F:A4:34:01").Build();
+            var rule = new RuleBuilder()
+                .SetProto("icmp")
+                .AddMatch(macMatch)
+                .Accept();
+            System.Console.WriteLine(rule);
+            using (var wr = new IptWrapper(Tables.FILTER))
+            {
+                wr.AppendRule(Chains.FORWARD, rule);
+                var rules = wr.GetRules(Chains.FORWARD);
+                rule = rules.First();
+                System.Console.WriteLine(rule);
+                var match = rule.Matches.First();
+                Assert.Equal("01:02:0F:A4:34:01", match[MacMatchBuilder.MAC_SOURCE_OPT]);
+                var target = rule.Target;
+                Assert.NotEmpty(rules);
+                Assert.Equal(TargetTypes.ACCEPT, target.Name);
+            }            
+        }
+
     }
 }
