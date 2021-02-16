@@ -7,8 +7,6 @@ namespace IptablesCtl.Models.Builders
     {
         public const string LIMIT_OPT = "--limit";
         public const string LIMIT_BURST_OPT = "--limit-burst";
-        public const uint LIMIT_BURST_DEF = 5;
-        public const uint LIMIT_DEF = 12000000;
         const uint DAY_RANGE = 24 * 60 * 60 * RateInfoOptions.XT_LIMIT_SCALE;
         const uint HOUR_RANGE = 60 * 60 * RateInfoOptions.XT_LIMIT_SCALE;
         const uint MINUTE_RANGE = 60 * RateInfoOptions.XT_LIMIT_SCALE;
@@ -71,7 +69,44 @@ namespace IptablesCtl.Models.Builders
 
         public override RateInfoOptions BuildNative()
         {
-            throw new NotImplementedException();
+            var match = Build();
+            RateInfoOptions opt = new RateInfoOptions();
+
+            if (match.TryGetOption(LIMIT_OPT, out var options))
+            {
+                var limitMatch = limitRegex.Match(options.Value);
+                if (limitMatch.Success)
+                {
+                    var count = uint.Parse(limitMatch.Groups["count"].Value);
+                    var range = limitMatch.Groups["range"].Value;
+                    var numerator = range.ToLower() switch
+                    {
+                        "s" => SECOND_RANGE,
+                        "m" => MINUTE_RANGE,
+                        "h" => HOUR_RANGE,
+                        "d" => DAY_RANGE,
+                        _ => throw new FormatException($"rate limit {options.Value}"),
+                    };
+                    opt.avg = numerator / count;
+                }
+                else
+                {
+                    throw new FormatException($"rate limit {options.Value}");
+                }
+            }
+            else
+            {
+                opt.avg = RateInfoOptions.LIMIT_DEF;
+            }
+            if (match.TryGetOption(LIMIT_BURST_OPT, out options))
+            {
+                opt.burst = uint.Parse(options.Value);
+            }
+            else
+            {
+                opt.burst = RateInfoOptions.LIMIT_BURST_DEF;
+            }
+            return opt;
         }
     }
 }

@@ -301,9 +301,31 @@ namespace IptablesCtl.Test
                 var target = rule.Target;
                 Assert.NotEmpty(rules);
                 Assert.Equal(TargetTypes.ACCEPT, target.Name);
-            }
+            }            
         }
 
+        [Fact]
+        public void WriteLimitMatch()
+        {
+            var limitMatch = new LimitMatchBuilder().SetLimit("20/m").Build();
+            var rule = new RuleBuilder()
+                .SetProto("icmp")
+                .AddMatch(limitMatch)
+                .Accept();
+            System.Console.WriteLine(rule);
+            using (var wr = new IptWrapper(Tables.FILTER))
+            {
+                wr.AppendRule(Chains.FORWARD, rule);
+                var rules = wr.GetRules(Chains.FORWARD);
+                rule = rules.First();
+                System.Console.WriteLine(rule);
+                var match = rule.Matches.First();
+                Assert.Equal("20/m", match[LimitMatchBuilder.LIMIT_OPT]);
+                var target = rule.Target;
+                Assert.NotEmpty(rules);
+                Assert.Equal(TargetTypes.ACCEPT, target.Name);
+            }            
+        }
 
     }
 }
