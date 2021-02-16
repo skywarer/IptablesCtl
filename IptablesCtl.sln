@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29509.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IptablesCtl", "IptablesCtl\IptablesCtl.csproj", "{12F79F64-4ADA-4FB2-989D-EC1B11C71BC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IptablesCtl.Test", "IptablesCtl.Test\IptablesCtl.Test.csproj", "{2FC9A606-5E09-4B2A-96DC-A3DA4A08FC04}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{380EF88A-F0D1-4A4F-8195-AEE5B1F8EF95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{380EF88A-F0D1-4A4F-8195-AEE5B1F8EF95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{380EF88A-F0D1-4A4F-8195-AEE5B1F8EF95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{380EF88A-F0D1-4A4F-8195-AEE5B1F8EF95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C72B92D-4866-4D3B-A274-EADC6A35F718}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C72B92D-4866-4D3B-A274-EADC6A35F718}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C72B92D-4866-4D3B-A274-EADC6A35F718}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C72B92D-4866-4D3B-A274-EADC6A35F718}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DDA47CD-96A3-42F7-8EE8-3247BB375E89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DDA47CD-96A3-42F7-8EE8-3247BB375E89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DDA47CD-96A3-42F7-8EE8-3247BB375E89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DDA47CD-96A3-42F7-8EE8-3247BB375E89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0578704B-8B25-44C0-AD18-D4FC8B10662A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0578704B-8B25-44C0-AD18-D4FC8B10662A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0578704B-8B25-44C0-AD18-D4FC8B10662A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0578704B-8B25-44C0-AD18-D4FC8B10662A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A8227E0-BF1A-49F4-BC00-5B95A49C324D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A8227E0-BF1A-49F4-BC00-5B95A49C324D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A8227E0-BF1A-49F4-BC00-5B95A49C324D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A8227E0-BF1A-49F4-BC00-5B95A49C324D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF3BE597-984E-489F-B485-F3F2E16F0F1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF3BE597-984E-489F-B485-F3F2E16F0F1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF3BE597-984E-489F-B485-F3F2E16F0F1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF3BE597-984E-489F-B485-F3F2E16F0F1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83492FF2-5865-452D-802F-63DC337C9CCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83492FF2-5865-452D-802F-63DC337C9CCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83492FF2-5865-452D-802F-63DC337C9CCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83492FF2-5865-452D-802F-63DC337C9CCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12F79F64-4ADA-4FB2-989D-EC1B11C71BC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12F79F64-4ADA-4FB2-989D-EC1B11C71BC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12F79F64-4ADA-4FB2-989D-EC1B11C71BC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12F79F64-4ADA-4FB2-989D-EC1B11C71BC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FC9A606-5E09-4B2A-96DC-A3DA4A08FC04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FC9A606-5E09-4B2A-96DC-A3DA4A08FC04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FC9A606-5E09-4B2A-96DC-A3DA4A08FC04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FC9A606-5E09-4B2A-96DC-A3DA4A08FC04}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {126EF7B7-2FDE-49D5-90D3-66888CC45A08}
+	EndGlobalSection
+EndGlobal
