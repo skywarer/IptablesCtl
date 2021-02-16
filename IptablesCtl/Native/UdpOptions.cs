@@ -9,7 +9,7 @@ namespace IptablesCtl.Native
     {
         public const byte XT_UDP_INV_SRCPT = 0x01;
         public const byte XT_UDP_INV_DSTPT = 0x02;
-        public const byte XT_UDP_INV_MASK = 0x03;
+        public const byte XT_UDP_INV_MASK = 0x03; // All possible flags
         
         [MarshalAs(UnmanagedType.ByValArray, SizeConst=2)]
         public ushort[] spts;

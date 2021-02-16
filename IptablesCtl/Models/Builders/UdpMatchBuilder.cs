@@ -59,7 +59,23 @@ namespace IptablesCtl.Models.Builders
 
         public override UdpOptions BuildNative()
         {
-            throw new NotImplementedException();
+            var match = Build();
+            UdpOptions opt = new UdpOptions();
+            //source-port
+            if(match.TryGetOption(SPORT_OPT, out var options))
+            {
+                var range = options.Value.ToRangeProperty(':');
+                opt.spts = new ushort[] { ushort.Parse(range.Left), ushort.Parse(range.Rigt) };
+                if (options.Inverted) opt.invflags |= UdpOptions.XT_UDP_INV_SRCPT;
+            }
+            //destination-port
+            if (match.TryGetOption(DPORT_OPT, out options))
+            {
+                var range = options.Value.ToRangeProperty(':');
+                opt.dpts = new ushort[] { ushort.Parse(range.Left), ushort.Parse(range.Rigt) };
+                if (!match.ContainsKey(DPORT_OPT)) opt.invflags |= UdpOptions.XT_UDP_INV_DSTPT;
+            }
+            return opt;
         }
     }
 }

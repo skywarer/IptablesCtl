@@ -14,6 +14,7 @@ namespace IptablesCtl.Test
             "iptables -F INPUT".Bash();
             "iptables -F OUTPUT".Bash();
             "iptables -F FORWARD".Bash();
+            
             "iptables -t nat -F INPUT".Bash();
             "iptables -t nat -F OUTPUT".Bash();
             "iptables -t nat -F FORWARD".Bash();
@@ -250,5 +251,34 @@ namespace IptablesCtl.Test
                 Assert.Empty(rules);
             }
         }
+
+        [Fact]
+        public void WriteUdpMatch()
+        {
+            var udpMatch = new UdpMatchBuilder().SetSrcPort(200,300).Build();
+            var rule = new RuleBuilder()
+                .SetIp4Src("192.168.5.2/23")
+                .SetIp4Dst("192.168.5/24")
+                .SetInInterface("eno8")
+                .SetOutInterface("eno45", true, true)
+                .SetProto("udp")
+                .AddMatch(udpMatch)
+                .Accept();
+            System.Console.WriteLine(rule);
+            using (var wr = new IptWrapper(Tables.FILTER))
+            {
+                wr.AppendRule(Chains.FORWARD, rule);
+                var rules = wr.GetRules(Chains.FORWARD);
+                rule = rules.First();
+                System.Console.WriteLine(rule);
+                var match = rule.Matches.First();
+                Assert.Equal("200:300", match[UdpMatchBuilder.SPORT_OPT]);
+                var target = rule.Target;
+                Assert.NotEmpty(rules);
+                Assert.Equal(TargetTypes.ACCEPT, target.Name);
+            }
+        }
+
+        
     }
 }

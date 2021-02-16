@@ -6,7 +6,7 @@ namespace IptablesCtl.Models.Builders
 {
     public abstract class OptionsBuilder<N, M> where N : struct where M : Options
     {
-        protected IDictionary<string, string> Properties { get; init; }
+        protected IDictionary<string, string> Properties { get; }
         public OptionsBuilder()
         {
             Properties = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);

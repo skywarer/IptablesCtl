@@ -14,7 +14,7 @@ namespace IptablesCtl.IO
         /// <summary>
         /// Current Table
         /// </summary>
-        public string Table { get; init; }
+        public string Table { get; }
         IntPtr _handle;
         public IptWrapper(string tableName = Tables.FILTER)
         {
@@ -353,7 +353,7 @@ namespace IptablesCtl.IO
                 throw new IptException($"{errStr} (errcode: {errno})");
             }
         }
-        
+
         /// <summary>
         /// Append rule to chain
         /// </summary>
@@ -363,7 +363,7 @@ namespace IptablesCtl.IO
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void AppendRule(string chain, Rule rule)
         {
-            IntPtr point = RuleToIntPtr(rule);;
+            IntPtr point = RuleToIntPtr(rule); ;
             try
             {
                 int result = Libiptc4.iptc_append_entry(chain, point, _handle);
@@ -413,6 +413,33 @@ namespace IptablesCtl.IO
                 case MatchTypes.TCP:
                     Marshal.StructureToPtr(new TcpMatchBuilder(match).BuildNative(), optPoint, true);
                     break;
+                case MatchTypes.UDP:
+                    Marshal.StructureToPtr(new UdpMatchBuilder(match).BuildNative(), optPoint, true);
+                    break;
+                case MatchTypes.ICMP:
+                    Marshal.StructureToPtr(new IcmpMatchBuilder(match).BuildNative(), optPoint, true);
+                    break;
+                case MatchTypes.LIMIT:
+                    Marshal.StructureToPtr(new LimitMatchBuilder(match).BuildNative(), optPoint, true);
+                    break;
+                case MatchTypes.MAC:
+                    Marshal.StructureToPtr(new MacMatchBuilder(match).BuildNative(), optPoint, true);
+                    break;
+                case MatchTypes.MARK:
+                    Marshal.StructureToPtr(new MarkMatchBuilder(match).BuildNative(), optPoint, true);
+                    break;
+                case MatchTypes.MULTIPORT:
+                    Marshal.StructureToPtr(new MultiportMatchBuilder(match).BuildNative(), optPoint, true);
+                    break;
+                case MatchTypes.OWNER:
+                    Marshal.StructureToPtr(new OwnerMatchBuilder(match).BuildNative(), optPoint, true);
+                    break;
+                case MatchTypes.TOS:
+                    Marshal.StructureToPtr(new TosMatchBuilder(match).BuildNative(), optPoint, true);
+                    break;
+                case MatchTypes.TTL:
+                    Marshal.StructureToPtr(new TtlMatchBuilder(match).BuildNative(), optPoint, true);
+                    break;
                 default:
                     object opt = SetMatchOptions(match);
                     if (opt != null)
@@ -424,20 +451,6 @@ namespace IptablesCtl.IO
                         Marshal.StructureToPtr(opt, optPoint, true);
                     }
                     break;
-                    /*
-                    case MatchTypes.UDP :
-                        Marshal.StructureToPtr(UdpMatch.ToOptions(match,optPoint,true);
-                        ,
-                    MatchTypes.ICMP => IcmpMatch.FromOptions(Marshal.PtrToStructure<IcmpOptions>(optPoint)),
-                    MatchTypes.LIMIT => LimitMatch.FromOptions(Marshal.PtrToStructure<RateinfoOptions>(optPoint)),
-                    MatchTypes.MAC => MacMatch.FromOptions(Marshal.PtrToStructure<MacOptions>(optPoint)),
-                    MatchTypes.MARK => MarkMatch.FromOptions(Marshal.PtrToStructure<MarkOptions>(optPoint)),
-                    MatchTypes.MULTIPORT => MultiportMatch.FromOptions(Marshal.PtrToStructure<MultiportOptions>(optPoint)),
-                    MatchTypes.OWNER => OwnerMatch.FromOptions(Marshal.PtrToStructure<OwnerOptions>(optPoint)),
-                    MatchTypes.TOS => TosMatch.FromOptions(Marshal.PtrToStructure<TosOptions>(optPoint)),
-                    MatchTypes.TTL => TtlMatch.FromOptions(Marshal.PtrToStructure<TtlOptions>(optPoint)),
-                    _ => GetUnknowMatch(header, optPoint)
-                    */
             };
             return header.size;
         }
@@ -508,7 +521,7 @@ namespace IptablesCtl.IO
             }
             return header.size;
         }
-       
+
         /// <summary>
         /// Replace rule with new
         /// </summary>
@@ -517,12 +530,12 @@ namespace IptablesCtl.IO
         /// <param name="rule"></param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void ReplaceRule(string chain, uint number,  Rule rule)
+        public void ReplaceRule(string chain, uint number, Rule rule)
         {
             IntPtr point = RuleToIntPtr(rule);
             try
             {
-                int result = Libiptc4.iptc_replace_entry(chain, point, number-1, _handle);
+                int result = Libiptc4.iptc_replace_entry(chain, point, number - 1, _handle);
                 CommitResultOrThrowException(result);
             }
             finally
@@ -530,7 +543,7 @@ namespace IptablesCtl.IO
                 Marshal.FreeHGlobal(point);
             }
         }
-        
+
         /// <summary>
         /// Delete from chain 
         /// </summary>
@@ -541,7 +554,7 @@ namespace IptablesCtl.IO
         {
             // documentation https://www.opennet.ru/docs/HOWTO/Querying-libiptc-HOWTO/ 
             // wrong with num start 1 !!!!
-            int result = Libiptc4.iptc_delete_num_entry(chain, number-1, _handle);
+            int result = Libiptc4.iptc_delete_num_entry(chain, number - 1, _handle);
             CommitResultOrThrowException(result);
         }
 

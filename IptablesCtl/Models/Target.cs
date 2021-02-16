@@ -6,7 +6,7 @@ namespace IptablesCtl.Models
     [JsonConverter(typeof(Serialization.TargetConverter))]
     public class Target : Options
     {
-        public string Name { get; init; }
+        public string Name { get; }
 
         public Target() : base(ImmutableDictionary<string, string>.Empty)
         { }

@@ -11,8 +11,8 @@ namespace IptablesCtl.Models
     [JsonConverter(typeof(Serialization.MatchConverter))]
     public class Match : Options
     {
-        public string Name { get; init; }
-        public bool NeedKey { get; init; }
+        public string Name { get; }
+        public bool NeedKey { get; }
 
         public Match(string name, bool needKey = false) : base(ImmutableDictionary<string, string>.Empty)
         {

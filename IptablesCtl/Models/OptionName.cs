@@ -1,7 +1,15 @@
 namespace IptablesCtl.Models
 {
-    public record OptionName(string Name, bool Inverted)
+    public readonly struct OptionName
     {
+
+        public readonly string Name;
+        public readonly bool Inverted;
+        public OptionName(string name, bool inverted)
+        {
+            Name = name;
+            Inverted = inverted;
+        }
         public override string ToString()
         {
             return Inverted ? $"! {Name}" : Name;

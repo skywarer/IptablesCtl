@@ -11,8 +11,8 @@ namespace IptablesCtl.Models
     [JsonConverter(typeof(Serialization.RuleConverter))]
     public class Rule : Options
     {
-        public IReadOnlyCollection<Match> Matches { get; init; }
-        public Target Target { get; init; }
+        public IReadOnlyCollection<Match> Matches { get; }
+        public Target Target { get; }
 
         public Rule() : base(ImmutableDictionary<string, string>.Empty)
         {

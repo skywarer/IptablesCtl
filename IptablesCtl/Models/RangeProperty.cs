@@ -1,8 +1,18 @@
 using System;
 namespace IptablesCtl.Models
 {
-    public record RangeProperty<T>(T Left, T Rigt, char Delim) where T : IComparable<T>
+    public readonly struct RangeProperty<T> where T : IComparable<T>
     {
+        public readonly T Left;
+        public readonly T Rigt;
+        public readonly char Delim;
+
+        public RangeProperty(T left, T right, char delim)
+        {
+            Left = left;
+            Rigt = right;
+            Delim = delim;
+        }
         public override string ToString()
         {            
             var order = Left.CompareTo(Rigt);
@@ -11,4 +21,6 @@ namespace IptablesCtl.Models
                     : $"{Left}";
         }
     }
+
+
 }
