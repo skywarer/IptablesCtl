@@ -4,7 +4,7 @@ using IptablesCtl.Native;
 
 namespace IptablesCtl.Models.Builders
 {
-    public sealed class IcmpMatchBuilder : OptionsBuilder<IcmpOptions,Match>
+    public sealed class IcmpMatchBuilder : OptionsBuilder<IcmpOptions, Match>
     {
 
         public static (byte type, byte code, string name)[] ICMP_TYPES = {
@@ -78,7 +78,7 @@ namespace IptablesCtl.Models.Builders
         public IcmpMatchBuilder SetIcmpType(string icmpName, bool invert = false)
         {
             var key = TYPE_OPT.ToOptionName(invert);
-            if (!ICMP_TYPES.Any(p => p.name == icmpName))
+            if (!ICMP_TYPES.Any(p => StringComparer.OrdinalIgnoreCase.Equals(p.name, icmpName)))
             {
                 throw new ArgumentException(nameof(icmpName));
             }
@@ -89,7 +89,7 @@ namespace IptablesCtl.Models.Builders
         public IcmpMatchBuilder SetIcmpType(byte icmpType, byte icmpCode, bool invert = false)
         {
             var key = TYPE_OPT.ToOptionName(invert);
-            var name = ICMP_TYPES.FirstOrDefault(p => p.type == icmpType && p.code == 0).name;
+            var name = ICMP_TYPES.FirstOrDefault(p => p.type == icmpType && p.code == icmpCode).name;
             if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentException($"{nameof(icmpType)}/{nameof(icmpCode)}");
@@ -112,7 +112,10 @@ namespace IptablesCtl.Models.Builders
             {
                 if (string.IsNullOrEmpty(topt.Value))
                     throw new ArgumentException($"empty value for options [!]{TYPE_OPT}");
-                opts.type = byte.Parse(topt.Value);
+                var icmpType = ICMP_TYPES.FirstOrDefault(p => StringComparer.OrdinalIgnoreCase.Equals(p.name, topt.Value));
+                opts.type = icmpType.type;
+                // length must be 2
+                opts.code = new byte[] { icmpType.code, icmpType.code };
                 if (topt.Inverted) opts.invflags |= IcmpOptions.IPT_ICMP_INV;
             }
             return opts;

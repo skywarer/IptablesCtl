@@ -14,7 +14,7 @@ namespace IptablesCtl.Test
             "iptables -F INPUT".Bash();
             "iptables -F OUTPUT".Bash();
             "iptables -F FORWARD".Bash();
-            
+
             "iptables -t nat -F INPUT".Bash();
             "iptables -t nat -F OUTPUT".Bash();
             "iptables -t nat -F FORWARD".Bash();
@@ -138,13 +138,13 @@ namespace IptablesCtl.Test
                 Assert.Equal(TargetTypes.MASQUERADE, target.Name);
             }
         }
-        
+
         [Fact]
         public void WriteTcpMatch()
         {
-            var tcpMatch = new TcpMatchBuilder().SetSrcPort(200,300)
-                .SetFlags(new []{"syn","fin","ack"},new []{"syn"})
-                .SetOption(16,true).Build();
+            var tcpMatch = new TcpMatchBuilder().SetSrcPort(200, 300)
+                .SetFlags(new[] { "syn", "fin", "ack" }, new[] { "syn" })
+                .SetOption(16, true).Build();
             var rule = new RuleBuilder()
                 .SetIp4Src("192.168.5.2/23")
                 .SetIp4Dst("192.168.5/24")
@@ -173,7 +173,7 @@ namespace IptablesCtl.Test
         public void ReplaceTcpMatch()
         {
             var tcpMatch = new TcpMatchBuilder().SetSrcPort(200, 300)
-                .SetFlags(new[] {"syn", "fin", "ack"}, new[] {"syn"})
+                .SetFlags(new[] { "syn", "fin", "ack" }, new[] { "syn" })
                 .SetOption(16, true).Build();
             var rule = new RuleBuilder()
                 .SetIp4Src("192.168.5.2/23")
@@ -184,7 +184,7 @@ namespace IptablesCtl.Test
                 .AddMatch(tcpMatch)
                 .Accept();
             var tcpMatch2 = new TcpMatchBuilder().SetSrcPort(500, 600)
-                .SetFlags(new[] {"syn", "fin", "ack"}, new[] {"syn"})
+                .SetFlags(new[] { "syn", "fin", "ack" }, new[] { "syn" })
                 .SetOption(16, true).Build();
             var rule2 = new RuleBuilder()
                 .SetIp4Src("192.168.7.2/23")
@@ -221,9 +221,9 @@ namespace IptablesCtl.Test
         [Fact]
         public void DeleteTcpMatch()
         {
-            var tcpMatch = new TcpMatchBuilder().SetSrcPort(200,300)
-                .SetFlags(new []{"syn","fin","ack"},new []{"syn"})
-                .SetOption(16,true).Build();
+            var tcpMatch = new TcpMatchBuilder().SetSrcPort(200, 300)
+                .SetFlags(new[] { "syn", "fin", "ack" }, new[] { "syn" })
+                .SetOption(16, true).Build();
             var rule = new RuleBuilder()
                 .SetIp4Src("192.168.5.2/23")
                 .SetIp4Dst("192.168.5/24")
@@ -243,7 +243,7 @@ namespace IptablesCtl.Test
                 Assert.NotEmpty(rules);
                 Assert.Equal(TargetTypes.ACCEPT, target.Name);
             }
-            
+
             using (var wr = new IptWrapper(Tables.NAT))
             {
                 wr.DeleteRule(Chains.POSTROUTING, 1);
@@ -255,7 +255,8 @@ namespace IptablesCtl.Test
         [Fact]
         public void WriteUdpMatch()
         {
-            var udpMatch = new UdpMatchBuilder().SetSrcPort(200,300).Build();
+            var udpMatch = new UdpMatchBuilder().SetSrcPort(200, 300)
+            .SetDstPort(400, 500).Build();
             var rule = new RuleBuilder()
                 .SetIp4Src("192.168.5.2/23")
                 .SetIp4Dst("192.168.5/24")
@@ -273,12 +274,36 @@ namespace IptablesCtl.Test
                 System.Console.WriteLine(rule);
                 var match = rule.Matches.First();
                 Assert.Equal("200:300", match[UdpMatchBuilder.SPORT_OPT]);
+                Assert.Equal("400:500", match[UdpMatchBuilder.DPORT_OPT]);
                 var target = rule.Target;
                 Assert.NotEmpty(rules);
                 Assert.Equal(TargetTypes.ACCEPT, target.Name);
             }
         }
 
-        
+        [Fact]
+        public void WriteIcmpMatch()
+        {
+            var icmpMatch = new IcmpMatchBuilder().SetIcmpType(3,11).Build();
+            var rule = new RuleBuilder()
+                .SetProto("icmp")
+                .AddMatch(icmpMatch)
+                .Accept();
+            System.Console.WriteLine(rule);
+            using (var wr = new IptWrapper(Tables.FILTER))
+            {
+                wr.AppendRule(Chains.FORWARD, rule);
+                var rules = wr.GetRules(Chains.FORWARD);
+                rule = rules.First();
+                System.Console.WriteLine(rule);
+                var match = rule.Matches.First();
+                Assert.Equal("TOS-network-unreachable", match[IcmpMatchBuilder.TYPE_OPT]);
+                var target = rule.Target;
+                Assert.NotEmpty(rules);
+                Assert.Equal(TargetTypes.ACCEPT, target.Name);
+            }
+        }
+
+
     }
 }
