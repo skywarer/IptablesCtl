@@ -61,7 +61,24 @@ namespace IptablesCtl.Models.Builders
         }
         public override TtlOptions BuildNative()
         {
-            throw new NotImplementedException();
+            var match = Build();
+            TtlOptions opt = new TtlOptions();
+            if (match.TryGetOption(TTL_EQ_OPT, out var options))
+            {
+                opt.ttl = byte.Parse(options.Value);
+                opt.mode = options.Inverted ? TtlOptions.IPT_TTL_NE : TtlOptions.IPT_TTL_EQ;
+            }
+            else if (match.TryGetOption(TTL_GT_OPT, out options))
+            {
+                opt.ttl = byte.Parse(options.Value);
+                opt.mode = TtlOptions.IPT_TTL_GT;
+            }
+            else if (match.TryGetOption(TTL_LT_OPT, out options))
+            {
+                opt.ttl = byte.Parse(options.Value);
+                opt.mode = TtlOptions.IPT_TTL_LT;
+            }
+            return opt;
         }
 
     }

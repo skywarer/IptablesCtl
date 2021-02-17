@@ -375,7 +375,6 @@ namespace IptablesCtl.Test
         [Fact]
         public void WriteMultiportMatch()
         {
-            /*FAIL*/
             var multiportMatch = new MultiportMatchBuilder()
             .SetDstPorts("12,23,55:77,90").Build();
             var rule = new RuleBuilder()
@@ -391,6 +390,82 @@ namespace IptablesCtl.Test
                 System.Console.WriteLine(rule);
                 var match = rule.Matches.First();
                 Assert.Equal("12,23,55:77,90", match[MultiportMatchBuilder.DESTINATION_PORT_OPT]);                
+                var target = rule.Target;
+                Assert.NotEmpty(rules);
+                Assert.Equal(TargetTypes.ACCEPT, target.Name);
+            }            
+        }
+
+        [Fact]
+        public void WriteOwnerMatch()
+        {
+            var multiportMatch = new OwnerMatchBuilder()
+            .SetUid(500,700)
+            .SetGid(5,5)
+            .SetSocketExists()
+            .Build();
+            var rule = new RuleBuilder()
+                .AddMatch(multiportMatch)                
+                .Accept();
+            System.Console.WriteLine(rule);
+            using (var wr = new IptWrapper())
+            {
+                wr.AppendRule(Chains.OUTPUT, rule);
+                var rules = wr.GetRules(Chains.OUTPUT);
+                rule = rules.First();
+                System.Console.WriteLine(rule);
+                var match = rule.Matches.First();
+                Assert.Equal("500-700", match[OwnerMatchBuilder.UID_OWNER_OPT]);  
+                Assert.Equal("5", match[OwnerMatchBuilder.GID_OWNER_OPT]);  
+                Assert.Equal(string.Empty, match[OwnerMatchBuilder.SOCKET_EXSTS_OPT]);            
+                var target = rule.Target;
+                Assert.NotEmpty(rules);
+                Assert.Equal(TargetTypes.ACCEPT, target.Name);
+            }            
+        }
+
+        [Fact]
+        public void WriteTosMatch()
+        {
+            var tosMatch = new TosMatchBuilder()
+            .SetTos(10,2)
+            .Build();
+            var rule = new RuleBuilder()
+                .AddMatch(tosMatch)                
+                .Accept();
+            System.Console.WriteLine(rule);
+            using (var wr = new IptWrapper())
+            {
+                wr.AppendRule(Chains.OUTPUT, rule);
+                var rules = wr.GetRules(Chains.OUTPUT);
+                rule = rules.First();
+                System.Console.WriteLine(rule);
+                var match = rule.Matches.First();
+                Assert.Equal("10/2", match[TosMatchBuilder.TOS_OPT]);         
+                var target = rule.Target;
+                Assert.NotEmpty(rules);
+                Assert.Equal(TargetTypes.ACCEPT, target.Name);
+            }            
+        }
+
+        [Fact]
+        public void WriteTtlMatch()
+        {
+            var tosMatch = new TtlMatchBuilder()
+            .SetTtlGreatThan(60)
+            .Build();
+            var rule = new RuleBuilder()
+                .AddMatch(tosMatch)                
+                .Accept();
+            System.Console.WriteLine(rule);
+            using (var wr = new IptWrapper())
+            {
+                wr.AppendRule(Chains.OUTPUT, rule);
+                var rules = wr.GetRules(Chains.OUTPUT);
+                rule = rules.First();
+                System.Console.WriteLine(rule);
+                var match = rule.Matches.First();
+                Assert.Equal("60", match[TtlMatchBuilder.TTL_GT_OPT]);         
                 var target = rule.Target;
                 Assert.NotEmpty(rules);
                 Assert.Equal(TargetTypes.ACCEPT, target.Name);

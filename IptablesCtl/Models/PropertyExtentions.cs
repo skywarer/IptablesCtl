@@ -90,13 +90,13 @@ namespace IptablesCtl.Models
 
         public static ushort[] ParseMultiports(this string prop, int max_size)
         {
-            var ports = prop.Split(',',':').Select(p => ushort.Parse(p)).ToArray();
+            var ports = prop.Split(',', ':').Select(p => ushort.Parse(p)).ToArray();
             Array.Resize(ref ports, max_size);
             return ports;
         }
 
         public static byte[] ParseMultiportsFlag(this string prop, int max_size, params char[] delims)
-        {            
+        {
             // restore last 0
             var pflags = prop.Concat(",").Where(c => Char.IsPunctuation(c)).
                 Select(c => c switch { ':' => (byte)1, _ => (byte)0, })

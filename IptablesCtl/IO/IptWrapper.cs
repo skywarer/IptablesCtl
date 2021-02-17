@@ -155,7 +155,7 @@ namespace IptablesCtl.IO
         {
             var header = Marshal.PtrToStructure<Header>(point);
             int offset = header.size;
-            var optPoint = point + Sizes.Align(Sizes.HeaderLen);
+            var optPoint = point + Sizes.Align(Sizes.HeaderLen);                        
             match = header.name.ToLower() switch
             {
                 MatchTypes.TCP => new TcpMatchBuilder(Marshal.PtrToStructure<TcpOptions>(optPoint)).Build(),
