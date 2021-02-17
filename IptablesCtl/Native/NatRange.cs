@@ -3,8 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace IptablesCtl.Native
 {
-    /*nf_nat.h nf_nat_ipv4_range*/
     [StructLayout(LayoutKind.Sequential)]
+    /*nf_nat_ipv4_range*/
     public struct NatRange
     {
         public const int NF_NAT_RANGE_MAP_IPS = 1;

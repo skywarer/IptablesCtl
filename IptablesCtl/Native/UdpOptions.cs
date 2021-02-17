@@ -3,8 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace IptablesCtl.Native
 {
-    /*xt_udp*/
     [StructLayout(LayoutKind.Sequential)]
+    /*xt_udp*/
     public struct UdpOptions
     {
         public const byte XT_UDP_INV_SRCPT = 0x01;

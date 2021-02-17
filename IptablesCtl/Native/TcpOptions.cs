@@ -3,8 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace IptablesCtl.Native
 {
-    /*xt_tcp*/
     [StructLayout(LayoutKind.Sequential)]
+    /*xt_tcp*/
     public struct TcpOptions
     {
         public const byte XT_TCP_INV_SRCPT = 0x01;

@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 namespace IptablesCtl.Native
 {
     [StructLayout(LayoutKind.Sequential)]
+    /*ipt_ttl_info*/
     public struct TtlOptions
     {
         public const byte IPT_TTL_EQ = 0;

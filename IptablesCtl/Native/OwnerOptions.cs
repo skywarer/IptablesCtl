@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 namespace IptablesCtl.Native
 {
     [StructLayout(LayoutKind.Sequential)]
+    /*ipt_owner_info*/
     public struct OwnerOptions
     {
         public const byte XT_OWNER_UID = 1;

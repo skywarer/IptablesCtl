@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 namespace IptablesCtl.Native
 {
     [StructLayout(LayoutKind.Sequential)]
+    /*xt_standard_target*/
     public struct StandardTarget
     {
         public const int NF_DROP = 0;

@@ -5,6 +5,7 @@ using System;
 namespace IptablesCtl.Native
 {
     [StructLayout(LayoutKind.Sequential)]
+    /*ipt_entry*/
     public struct IptEntry
     {
         public IptIp ip;

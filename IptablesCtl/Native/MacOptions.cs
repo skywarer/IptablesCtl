@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 namespace IptablesCtl.Native
 {
     [StructLayout(LayoutKind.Sequential)]
+    /*xt_mac_info*/
     public struct MacOptions
     {
         public const int ETH_ALEN = 6;

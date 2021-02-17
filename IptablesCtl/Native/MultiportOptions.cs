@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 namespace IptablesCtl.Native
 {
     [StructLayout(LayoutKind.Sequential)]
+    /*xt_multiport_v1*/
     public struct MultiportOptions
     {
         public const byte XT_MULTIPORT_SOURCE = 0;

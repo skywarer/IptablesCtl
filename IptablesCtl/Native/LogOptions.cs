@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 namespace IptablesCtl.Native
 {
     [StructLayout(LayoutKind.Sequential)]
+    /*ipt_log_info*/
     public struct LogOptions
     {        
         public const byte IPT_LOG_TCPSEQ = 0x01;

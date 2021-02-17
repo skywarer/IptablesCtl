@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 namespace IptablesCtl.Native
 {
     [StructLayout(LayoutKind.Sequential)]
+    /*ipv4_multi_range_compat*/
     public struct NatOptions
     {
         public uint range_size;

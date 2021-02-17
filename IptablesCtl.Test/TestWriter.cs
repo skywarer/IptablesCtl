@@ -353,7 +353,6 @@ namespace IptablesCtl.Test
         [Fact]
         public void WriteMarkMatch()
         {
-            /*FAIL*/
             var markMatch = new MarkMatchBuilder().SetMark(8,63).Build();
             var rule = new RuleBuilder()
                 .AddMatch(markMatch)                

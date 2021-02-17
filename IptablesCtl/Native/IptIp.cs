@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 namespace IptablesCtl.Native
 {
     [StructLayout(LayoutKind.Sequential)]
+    /*ipt_ip*/
     public struct IptIp
     {        
         public const int IFNAMSIZ = 16;
