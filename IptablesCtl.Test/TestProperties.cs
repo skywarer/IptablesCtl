@@ -46,6 +46,13 @@ namespace IptablesCtl.Test
         }
 
         [Fact]
+        public void TestMultiportProperties()
+        {
+            Assert.Equal(new ushort[]{12,23,55,77,90,0,0,0,0,0}, "12,23,55:77,90".ParseMultiports(10));
+            Assert.Equal(new byte[]{0,0,1,0,0,0,0,0,0,0}, "12,23,55:77,90".ParseMultiportsFlag(10));
+        }
+
+        [Fact]
         public void TestParseIpProtoRange()
         {
             uint minIp = 2344, maxIp = 5589;

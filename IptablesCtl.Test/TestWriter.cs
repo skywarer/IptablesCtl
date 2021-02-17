@@ -350,5 +350,53 @@ namespace IptablesCtl.Test
             }            
         }
 
+        [Fact]
+        public void WriteMarkMatch()
+        {
+            /*FAIL*/
+            var markMatch = new MarkMatchBuilder().SetMark(8,63).Build();
+            var rule = new RuleBuilder()
+                .AddMatch(markMatch)                
+                .Accept();
+            System.Console.WriteLine(rule);
+            using (var wr = new IptWrapper(Tables.MANGLE))
+            {
+                wr.AppendRule(Chains.INPUT, rule);
+                var rules = wr.GetRules(Chains.INPUT);
+                rule = rules.First();
+                System.Console.WriteLine(rule);
+                var match = rule.Matches.First();
+                Assert.Equal("8/63", match[MarkMatchBuilder.MARK_OPT]);
+                var target = rule.Target;
+                Assert.NotEmpty(rules);
+                Assert.Equal(TargetTypes.ACCEPT, target.Name);
+            }            
+        }
+
+        [Fact]
+        public void WriteMultiportMatch()
+        {
+            /*FAIL*/
+            var multiportMatch = new MultiportMatchBuilder()
+            .SetDstPorts("12,23,55:77,90").Build();
+            var rule = new RuleBuilder()
+                .SetProto("tcp")
+                .AddMatch(multiportMatch)                
+                .Accept();
+            System.Console.WriteLine(rule);
+            using (var wr = new IptWrapper())
+            {
+                wr.AppendRule(Chains.INPUT, rule);
+                var rules = wr.GetRules(Chains.INPUT);
+                rule = rules.First();
+                System.Console.WriteLine(rule);
+                var match = rule.Matches.First();
+                Assert.Equal("12,23,55:77,90", match[MultiportMatchBuilder.DESTINATION_PORT_OPT]);                
+                var target = rule.Target;
+                Assert.NotEmpty(rules);
+                Assert.Equal(TargetTypes.ACCEPT, target.Name);
+            }            
+        }
+
     }
 }

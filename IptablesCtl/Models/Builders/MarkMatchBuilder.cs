@@ -39,7 +39,16 @@ namespace IptablesCtl.Models.Builders
 
         public override MarkOptions BuildNative()
         {
-            throw new NotImplementedException();
+            var match = Build();
+            MarkOptions opt = new MarkOptions();
+            if (match.TryGetOption(MARK_OPT, out var options))
+            {
+                var masked = options.Value.ToMaskedProperty('/',"0");
+                opt.mark = uint.Parse(masked.Value);
+                opt.mask = uint.Parse(masked.Mask);
+                if (options.Inverted) opt.invert |= MarkOptions.XT_MARK_INV;
+            }
+            return opt;
         }
 
     }

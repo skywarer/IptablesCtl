@@ -14,16 +14,23 @@ namespace IptablesCtl.Models
         public string Name { get; }
         public bool NeedKey { get; }
 
-        public Match(string name, bool needKey = false) : base(ImmutableDictionary<string, string>.Empty)
+        /// <summary>
+        /// Version of struct
+        /// </summary>
+        public byte Revision {get;}
+
+        public Match(string name, bool needKey = false, byte revision = 0) : base(ImmutableDictionary<string, string>.Empty)
         {
             Name = name;
             NeedKey = needKey;
+            Revision = revision;
         }
 
-        public Match(string name, bool needKey, IDictionary<string, string> prop) : base(prop)
+        public Match(string name, bool needKey, IDictionary<string, string> prop, byte revision = 0) : base(prop)
         {
             Name = name;
             NeedKey = needKey;
+            Revision = revision;
         }
 
         public override string ToString()

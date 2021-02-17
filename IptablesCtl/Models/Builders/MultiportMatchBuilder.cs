@@ -6,6 +6,7 @@ namespace IptablesCtl.Models.Builders
 {
     public sealed class MultiportMatchBuilder : OptionsBuilder<MultiportOptions, Match>
     {
+        public const byte Revision = 1;
         public const string SOURCE_PORT_OPT = "--source-port";
         public const string DESTINATION_PORT_OPT = "--destination-port";
         public const string PORT_OPT = "--port";
@@ -86,12 +87,36 @@ namespace IptablesCtl.Models.Builders
 
         public override Match Build()
         {
-            return new Match(MatchTypes.MULTIPORT, true, Properties);
+            return new Match(MatchTypes.MULTIPORT, true, Properties, Revision);
         }
+
 
         public override MultiportOptions BuildNative()
         {
-            throw new NotImplementedException();
+            var match = Build();
+            MultiportOptions opt = new MultiportOptions();
+            //source-port
+            if (match.TryGetOption(SOURCE_PORT_OPT, out var options))
+            {
+                opt.flags |= MultiportOptions.XT_MULTIPORT_SOURCE;
+            }
+            else if (match.TryGetOption(DESTINATION_PORT_OPT, out options))
+            {
+                opt.flags |= MultiportOptions.XT_MULTIPORT_DESTINATION;
+            }
+            else if (match.TryGetOption(PORT_OPT, out options))
+            {
+                opt.flags |= MultiportOptions.XT_MULTIPORT_EITHER;
+            }
+            else
+            {
+                throw new ArgumentNullException("port options");
+            }
+            opt.ports = options.Value.ParseMultiports(MultiportOptions.XT_MULTI_PORTS);
+            opt.pflags = options.Value.ParseMultiportsFlag(MultiportOptions.XT_MULTI_PORTS);
+            opt.count = (byte)opt.ports.Count(p => p > 0);
+            if (options.Inverted) opt.invert |= MultiportOptions.XT_MULTIPORTS_INV;
+            return opt;
         }
 
     }

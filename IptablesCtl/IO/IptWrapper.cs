@@ -397,6 +397,7 @@ namespace IptablesCtl.IO
             //header
             Header header = new Header();
             header.name = match.Name;
+            header.revision = match.Revision;
             var optType = GetMatchOptionsTypeBase(match.Name);
             var optSize = Marshal.SizeOf(optType);
             var allSize = Sizes.Align(Options.HeaderLen + optSize);
