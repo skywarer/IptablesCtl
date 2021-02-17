@@ -1,4 +1,3 @@
-#define DEBUG
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -94,7 +93,7 @@ namespace IptablesCtl.IO
         };
 
         /// <summary>
-        /// Type of match option by name selector
+        /// Custom type of match option by name selector
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -104,7 +103,7 @@ namespace IptablesCtl.IO
         }
 
         /// <summary>
-        /// Match options deserialize 
+        /// Custom match options deserialize 
         /// </summary>
         /// <param name="header"></param>
         /// <param name="options"></param>
@@ -115,7 +114,7 @@ namespace IptablesCtl.IO
         }
 
         /// <summary>
-        /// Deserialize match options for not base types
+        /// Deserialize match options for not based types
         /// </summary>
         /// <param name="header"></param>
         /// <param name="optPoint"></param>
@@ -216,7 +215,7 @@ namespace IptablesCtl.IO
         };
 
         /// <summary>
-        /// Type of target option by name selector
+        /// Custom type of target option by name selector
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -226,7 +225,7 @@ namespace IptablesCtl.IO
         }
 
         /// <summary>
-        /// Target options deserialize
+        /// Custom target options deserialize
         /// </summary>
         /// <param name="header"></param>
         /// <param name="options"></param>
@@ -237,7 +236,7 @@ namespace IptablesCtl.IO
         }
 
         /// <summary>
-        /// Deserialize match options for not base types
+        /// Deserialize match options for not based types
         /// </summary>
         /// <param name="header"></param>
         /// <param name="optPoint"></param>
@@ -376,7 +375,7 @@ namespace IptablesCtl.IO
         }
 
         /// <summary>
-        /// Serialize match options to struct
+        /// Custom serialize match options to struct
         /// </summary>
         /// <param name="match"></param>
         /// <returns></returns>
@@ -478,6 +477,7 @@ namespace IptablesCtl.IO
             //header
             Header header = new Header();
             header.name = target.Name;
+            header.revision = target.Revision;
             var optType = GetTargetOptionsTypeBase(target.Name);
             var optSize = Marshal.SizeOf(optType);
             var allSize = Sizes.Align(Options.HeaderLen + optSize);
@@ -512,7 +512,7 @@ namespace IptablesCtl.IO
                     break;
                 default:
                     options = SetTargetOptions(target);
-                    break;                    
+                    break;
             };
             if (options != null)
             {

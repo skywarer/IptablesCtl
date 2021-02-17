@@ -16,6 +16,7 @@ namespace IptablesCtl.Models.Serialization
                 throw new JsonException();
             }
             string name = "unknown target";
+            byte rev = 0;
             IDictionary<string, string> prop = System.Collections.Immutable.ImmutableDictionary<string, string>.Empty;
             while (reader.Read())
             {
@@ -32,13 +33,16 @@ namespace IptablesCtl.Models.Serialization
                         case "Name":
                             name = reader.GetString();
                             break;
+                        case "Revision":
+                            rev = reader.GetByte();
+                            break;
                         case "Options":
                             prop = JsonSerializer.Deserialize<IDictionary<string, string>>(ref reader, options);
                             break;
                     }
                 }
             }
-            return new Target(name, prop);
+            return new Target(name, prop, rev);
         }
 
         public override void Write(
@@ -48,6 +52,7 @@ namespace IptablesCtl.Models.Serialization
         {
             writer.WriteStartObject();
             writer.WriteString("Name", target.Name);
+            writer.WriteNumber("Revision", target.Revision);
             if (target.Any())
             {
                 writer.WritePropertyName("Options");

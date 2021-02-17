@@ -18,6 +18,7 @@ namespace IptablesCtl.Models.Serialization
             }
             string name = "unknown match";
             bool needKey = false;
+            byte rev = 0;
             IDictionary<string, string> prop = System.Collections.Immutable.ImmutableDictionary<string, string>.Empty;
             while (reader.Read())
             {
@@ -37,13 +38,16 @@ namespace IptablesCtl.Models.Serialization
                         case "NeedKey":
                             needKey = reader.GetBoolean();
                             break;
+                        case "Revision":
+                            rev = reader.GetByte();
+                            break;
                         case "Options":
                             prop = JsonSerializer.Deserialize<IDictionary<string, string>>(ref reader, options);
                             break;
                     }
                 }
             }
-            return new Match(name, needKey, prop);
+            return new Match(name, needKey, prop, rev);
         }
 
         public override void Write(
@@ -54,6 +58,7 @@ namespace IptablesCtl.Models.Serialization
             writer.WriteStartObject();
             writer.WriteString("Name", match.Name);
             writer.WriteBoolean("NeedKey", match.NeedKey);
+            writer.WriteNumber("Revision", match.Revision);
             if (match.Any())
             {
                 writer.WritePropertyName("Options");

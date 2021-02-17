@@ -8,17 +8,23 @@ namespace IptablesCtl.Models
     {
         public string Name { get; }
 
-        public Target() : base(ImmutableDictionary<string, string>.Empty)
-        { }
+        /// <summary>
+        /// Version of struct
+        /// </summary>
+        public byte Revision { get; }
 
-        public Target(string name) : base(ImmutableDictionary<string, string>.Empty)
+        public Target(byte revision = 0) : this(string.Empty, ImmutableDictionary<string, string>.Empty, revision)
         {
-            Name = name;
         }
 
-        public Target(string name, IDictionary<string, string> prop) : base(prop)
+        public Target(string name, byte revision = 0) : this(name, ImmutableDictionary<string, string>.Empty, revision)
+        {
+        }
+
+        public Target(string name, IDictionary<string, string> prop, byte revision = 0) : base(prop)
         {
             Name = name;
+            Revision = revision;
         }
 
         public override string ToString()
