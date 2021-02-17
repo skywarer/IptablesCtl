@@ -76,22 +76,22 @@ namespace IptablesCtl.Models.Builders
         }
 
         public LogTargetBuilder SetLogTcpSequence()
-        {            
+        {
             AddProperty(LOG_TCP_SEQUENCE_OPT.ToOptionName());
             return this;
         }
         public LogTargetBuilder SetLogTcp()
-        {            
+        {
             AddProperty(LOG_TCP_OPT.ToOptionName());
             return this;
         }
         public LogTargetBuilder SetLogIp()
-        {            
+        {
             AddProperty(LOG_IP_OPT.ToOptionName());
             return this;
         }
         public LogTargetBuilder SetLogUid()
-        {            
+        {
             AddProperty(LOG_UID_OPT.ToOptionName());
             return this;
         }
@@ -102,7 +102,34 @@ namespace IptablesCtl.Models.Builders
 
         public override LogOptions BuildNative()
         {
-            throw new NotImplementedException();
+            Target target = Build();
+            LogOptions opt = new LogOptions();
+            if (target.TryGetOption(LOG_LEVEL_OPT, out var option))
+            {
+                opt.level = LOG_TYPES.FirstOrDefault(l => 
+                    StringComparer.OrdinalIgnoreCase.Equals(l.name,option.Value)).code;
+            }
+            if (target.TryGetOption(LOG_PREFIX_OPT, out var prefix))
+            {
+                opt.prefix = prefix.Value;
+            }
+            if (target.ContainsOption(LOG_TCP_SEQUENCE_OPT))
+            {
+                opt.logflags |= LogOptions.IPT_LOG_TCPSEQ;
+            }
+            if (target.ContainsOption(LOG_TCP_OPT))
+            {
+                opt.logflags |= LogOptions.IPT_LOG_TCPOPT;
+            }
+            if (target.ContainsOption(LOG_IP_OPT))
+            {
+                opt.logflags |= LogOptions.IPT_LOG_IPOPT;
+            }
+            if (target.ContainsOption(LOG_UID_OPT))
+            {
+                opt.logflags |= LogOptions.IPT_LOG_UID;
+            }
+            return opt;
         }
     }
 }

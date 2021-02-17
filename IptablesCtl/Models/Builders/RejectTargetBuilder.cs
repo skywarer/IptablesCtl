@@ -48,7 +48,14 @@ namespace IptablesCtl.Models.Builders
 
         public override RejectOptions BuildNative()
         {
-            throw new NotImplementedException();
+            Target target = Build();
+            RejectOptions reject = new RejectOptions();
+            if (target.TryGetOption(REJECT_WITH_OPT, out var opt))
+            {
+                reject.with = reject_with.FirstOrDefault(p =>
+                    StringComparer.OrdinalIgnoreCase.Equals(p.key, opt.Value)).value;
+            }
+            return reject;
         }
     }
 }

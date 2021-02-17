@@ -84,6 +84,60 @@ namespace IptablesCtl.Test
         }
 
         [Fact]
+        public void WriteRedirectTarget()
+        {
+            var redirectTarget = new RedirectTargetBuilder()
+            .SetRedirectWithProto(1024,31000).Build();
+            var rule = new RuleBuilder()
+                .SetIp4Src("192.168.3.2/23")
+                .SetIp4Dst("192.168.3/24")
+                .SetInInterface("eno8")
+                .SetOutInterface("eno45", true, true)
+                .SetProto("tCp")
+                .SetTarget(redirectTarget)
+                .Build();
+            System.Console.WriteLine(rule);
+            using (var wr = new IptWrapper(Tables.NAT))
+            {
+                wr.AppendRule(Chains.OUTPUT, rule);
+                var rules = wr.GetRules(Chains.OUTPUT);
+                rule = rules.First();
+                var target = rule.Target;
+                System.Console.WriteLine(rule);
+                Assert.NotEmpty(rules);
+                Assert.Equal("1024-31000", target[RedirectTargetBuilder.TO_PORTS_OPT]);
+                Assert.Equal(TargetTypes.REDIRECT, target.Name);
+            }
+        }
+
+        [Fact]
+        public void WriteRejectTarget()
+        {
+            var rejectTarget = new RejectTargetBuilder()
+            .SetRejectWith(Native.RejectWith.IPT_ICMP_PORT_UNREACHABLE).Build();
+            var rule = new RuleBuilder()
+                .SetIp4Src("192.168.3.2/23")
+                .SetIp4Dst("192.168.3/24")
+                .SetInInterface("eno8")
+                .SetOutInterface("eno45", true, true)
+                .SetProto("tCp")
+                .SetTarget(rejectTarget)
+                .Build();
+            System.Console.WriteLine(rule);
+            using (var wr = new IptWrapper())
+            {
+                wr.AppendRule(Chains.OUTPUT, rule);
+                var rules = wr.GetRules(Chains.OUTPUT);
+                rule = rules.First();
+                var target = rule.Target;
+                System.Console.WriteLine(rule);
+                Assert.NotEmpty(rules);
+                Assert.Equal("icmp-port-unreachable", target[RejectTargetBuilder.REJECT_WITH_OPT]);
+                Assert.Equal(TargetTypes.REJECT, target.Name);
+            }
+        }
+
+        [Fact]
         public void WriteDNatTarget()
         {
             var dnatTarget = new DNatTargetBuilder().SetDestination("192.168.1.1", "192.168.1.10", 200, 300)
@@ -136,6 +190,33 @@ namespace IptablesCtl.Test
                 Assert.Equal("200-300", target[MasqueradeTargetBuilder.TO_PORTS_OPT]);
                 Assert.NotNull(target[MasqueradeTargetBuilder.RANDOM_OPT]);
                 Assert.Equal(TargetTypes.MASQUERADE, target.Name);
+            }
+        }
+
+        [Fact]
+        public void WriteLogTarget()
+        {
+            var logTarget = new LogTargetBuilder()
+                .SetLogLevel(7).Build();
+            var rule = new RuleBuilder()
+                .SetIp4Src("192.168.3.2/23")
+                .SetIp4Dst("192.168.3/24")
+                .SetInInterface("eno8")
+                .SetOutInterface("eno45", true, true)
+                .SetProto("tCp")
+                .SetTarget(logTarget)
+                .Build();
+            System.Console.WriteLine(rule);
+            using (var wr = new IptWrapper())
+            {
+                wr.AppendRule(Chains.INPUT, rule);
+                var rules = wr.GetRules(Chains.INPUT);
+                rule = rules.First();
+                var target = rule.Target;
+                System.Console.WriteLine(rule);
+                Assert.NotEmpty(rules);
+                Assert.Equal($"{Native.LogLevels.DEBUG}", target[LogTargetBuilder.LOG_LEVEL_OPT]);
+                Assert.Equal(TargetTypes.LOG, target.Name);
             }
         }
 
@@ -284,7 +365,7 @@ namespace IptablesCtl.Test
         [Fact]
         public void WriteIcmpMatch()
         {
-            var icmpMatch = new IcmpMatchBuilder().SetIcmpType(3,11).Build();
+            var icmpMatch = new IcmpMatchBuilder().SetIcmpType(3, 11).Build();
             var rule = new RuleBuilder()
                 .SetProto("icmp")
                 .AddMatch(icmpMatch)
@@ -301,7 +382,7 @@ namespace IptablesCtl.Test
                 var target = rule.Target;
                 Assert.NotEmpty(rules);
                 Assert.Equal(TargetTypes.ACCEPT, target.Name);
-            }            
+            }
         }
 
         [Fact]
@@ -324,7 +405,7 @@ namespace IptablesCtl.Test
                 var target = rule.Target;
                 Assert.NotEmpty(rules);
                 Assert.Equal(TargetTypes.ACCEPT, target.Name);
-            }            
+            }
         }
 
         [Fact]
@@ -347,15 +428,15 @@ namespace IptablesCtl.Test
                 var target = rule.Target;
                 Assert.NotEmpty(rules);
                 Assert.Equal(TargetTypes.ACCEPT, target.Name);
-            }            
+            }
         }
 
         [Fact]
         public void WriteMarkMatch()
         {
-            var markMatch = new MarkMatchBuilder().SetMark(8,63).Build();
+            var markMatch = new MarkMatchBuilder().SetMark(8, 63).Build();
             var rule = new RuleBuilder()
-                .AddMatch(markMatch)                
+                .AddMatch(markMatch)
                 .Accept();
             System.Console.WriteLine(rule);
             using (var wr = new IptWrapper(Tables.MANGLE))
@@ -369,7 +450,7 @@ namespace IptablesCtl.Test
                 var target = rule.Target;
                 Assert.NotEmpty(rules);
                 Assert.Equal(TargetTypes.ACCEPT, target.Name);
-            }            
+            }
         }
 
         [Fact]
@@ -379,7 +460,7 @@ namespace IptablesCtl.Test
             .SetDstPorts("12,23,55:77,90").Build();
             var rule = new RuleBuilder()
                 .SetProto("tcp")
-                .AddMatch(multiportMatch)                
+                .AddMatch(multiportMatch)
                 .Accept();
             System.Console.WriteLine(rule);
             using (var wr = new IptWrapper())
@@ -389,23 +470,23 @@ namespace IptablesCtl.Test
                 rule = rules.First();
                 System.Console.WriteLine(rule);
                 var match = rule.Matches.First();
-                Assert.Equal("12,23,55:77,90", match[MultiportMatchBuilder.DESTINATION_PORT_OPT]);                
+                Assert.Equal("12,23,55:77,90", match[MultiportMatchBuilder.DESTINATION_PORT_OPT]);
                 var target = rule.Target;
                 Assert.NotEmpty(rules);
                 Assert.Equal(TargetTypes.ACCEPT, target.Name);
-            }            
+            }
         }
 
         [Fact]
         public void WriteOwnerMatch()
         {
             var multiportMatch = new OwnerMatchBuilder()
-            .SetUid(500,700)
-            .SetGid(5,5)
+            .SetUid(500, 700)
+            .SetGid(5, 5)
             .SetSocketExists()
             .Build();
             var rule = new RuleBuilder()
-                .AddMatch(multiportMatch)                
+                .AddMatch(multiportMatch)
                 .Accept();
             System.Console.WriteLine(rule);
             using (var wr = new IptWrapper())
@@ -415,23 +496,23 @@ namespace IptablesCtl.Test
                 rule = rules.First();
                 System.Console.WriteLine(rule);
                 var match = rule.Matches.First();
-                Assert.Equal("500-700", match[OwnerMatchBuilder.UID_OWNER_OPT]);  
-                Assert.Equal("5", match[OwnerMatchBuilder.GID_OWNER_OPT]);  
-                Assert.Equal(string.Empty, match[OwnerMatchBuilder.SOCKET_EXSTS_OPT]);            
+                Assert.Equal("500-700", match[OwnerMatchBuilder.UID_OWNER_OPT]);
+                Assert.Equal("5", match[OwnerMatchBuilder.GID_OWNER_OPT]);
+                Assert.Equal(string.Empty, match[OwnerMatchBuilder.SOCKET_EXSTS_OPT]);
                 var target = rule.Target;
                 Assert.NotEmpty(rules);
                 Assert.Equal(TargetTypes.ACCEPT, target.Name);
-            }            
+            }
         }
 
         [Fact]
         public void WriteTosMatch()
         {
             var tosMatch = new TosMatchBuilder()
-            .SetTos(10,2)
+            .SetTos(10, 2)
             .Build();
             var rule = new RuleBuilder()
-                .AddMatch(tosMatch)                
+                .AddMatch(tosMatch)
                 .Accept();
             System.Console.WriteLine(rule);
             using (var wr = new IptWrapper())
@@ -441,11 +522,11 @@ namespace IptablesCtl.Test
                 rule = rules.First();
                 System.Console.WriteLine(rule);
                 var match = rule.Matches.First();
-                Assert.Equal("10/2", match[TosMatchBuilder.TOS_OPT]);         
+                Assert.Equal("10/2", match[TosMatchBuilder.TOS_OPT]);
                 var target = rule.Target;
                 Assert.NotEmpty(rules);
                 Assert.Equal(TargetTypes.ACCEPT, target.Name);
-            }            
+            }
         }
 
         [Fact]
@@ -455,7 +536,7 @@ namespace IptablesCtl.Test
             .SetTtlGreatThan(60)
             .Build();
             var rule = new RuleBuilder()
-                .AddMatch(tosMatch)                
+                .AddMatch(tosMatch)
                 .Accept();
             System.Console.WriteLine(rule);
             using (var wr = new IptWrapper())
@@ -465,12 +546,11 @@ namespace IptablesCtl.Test
                 rule = rules.First();
                 System.Console.WriteLine(rule);
                 var match = rule.Matches.First();
-                Assert.Equal("60", match[TtlMatchBuilder.TTL_GT_OPT]);         
+                Assert.Equal("60", match[TtlMatchBuilder.TTL_GT_OPT]);
                 var target = rule.Target;
                 Assert.NotEmpty(rules);
                 Assert.Equal(TargetTypes.ACCEPT, target.Name);
-            }            
-        }
-
+            }
+        }        
     }
 }

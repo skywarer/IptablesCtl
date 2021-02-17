@@ -69,7 +69,7 @@ namespace IptablesCtl.Models.Builders
             //uid-owner
             if (match.TryGetOption(UID_OWNER_OPT, out var options))
             {
-                var range = options.Value.ParseRange('-');
+                var range = options.Value.ToRangeProperty('-');
                 opt.uid_min = uint.Parse(range.Left);
                 opt.uid_max = uint.Parse(range.Rigt);
                 opt.match |= OwnerOptions.XT_OWNER_UID;
@@ -78,7 +78,7 @@ namespace IptablesCtl.Models.Builders
             //gid-owner
             if (match.TryGetOption(GID_OWNER_OPT, out options))
             {
-                var range = options.Value.ParseRange('-');
+                var range = options.Value.ToRangeProperty('-');
                 opt.gid_min = uint.Parse(range.Left);
                 opt.gid_max = uint.Parse(range.Rigt);
                 opt.match |= OwnerOptions.XT_OWNER_GID;

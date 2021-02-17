@@ -22,13 +22,13 @@ namespace IptablesCtl.Models
         {
             return prop.ToMaskedProperty(delim, null);
         }
-        public static MaskedProperty ToMaskedProperty(this string prop, char delim, string def)
+        public static MaskedProperty ToMaskedProperty(this string prop, char delim, string defMask)
         {
             prop = prop.TrimEnd(delim);
             var inx = prop.LastIndexOf(delim);
             return inx > 0 ?
                 new MaskedProperty(prop.Substring(0, inx), prop.Substring(inx + 1), delim)
-                : new MaskedProperty(prop, def, delim);
+                : new MaskedProperty(prop, defMask, delim);
         }
 
         public static RangeProperty<string> ToRangeProperty(this string prop, char delim)
@@ -52,23 +52,11 @@ namespace IptablesCtl.Models
             return prop.Split(':').Select(s => byte.Parse(s, System.Globalization.NumberStyles.HexNumber)).ToArray();
         }
 
-        public static MaskedProperty ParseMasked(this string prop, char delim)
-        {
-            var splitted = prop.Split(delim);
-            return new MaskedProperty(splitted[0], splitted.Length > 1 ? splitted[1] : string.Empty, delim);
-        }
-
-        public static RangeProperty<string> ParseRange(this string prop, char delim)
-        {
-            var splitted = prop.Split(delim);
-            return new RangeProperty<string>(splitted[0], splitted.Length > 1 ? splitted[1] : splitted[0], delim);
-        }
-
-        public static (uint minIp, uint maxIp, ushort minP, ushort maxP) ParseIpProtoRange(this string prop)
+        public static (uint minIp, uint maxIp, ushort minP, ushort maxP) ToIpProtoRange(this string prop)
         {
             uint minIp = 0, maxIp = 0;
             ushort minP = 0, maxP = 0;
-            var srcMask = prop.ParseMasked(':');
+            var srcMask = prop.ToMaskedProperty(':');
             // ip range
             var sortedIp = srcMask.Value.Split('-').Where(v => !string.IsNullOrEmpty(v))
                 .Select(v => v.ParseIpv4()).OrderBy(v => v).ToArray();

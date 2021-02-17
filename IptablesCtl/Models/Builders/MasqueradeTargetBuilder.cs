@@ -67,7 +67,7 @@ namespace IptablesCtl.Models.Builders
             options.range_size = 1;
             if (msqrd.TryGetValue(TO_PORTS_OPT, out var src))
             {
-                var range = src.ParseRange('-');
+                var range = src.ToRangeProperty('-');
                 options.ranges[0].min_proto = ReverceEndian(ushort.Parse(range.Left));
                 options.ranges[0].max_proto = ReverceEndian(ushort.Parse(range.Rigt));
                 options.ranges[0].flags |= NatRange.NF_NAT_RANGE_PROTO_SPECIFIED;

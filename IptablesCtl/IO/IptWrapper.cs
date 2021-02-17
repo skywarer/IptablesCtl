@@ -155,7 +155,7 @@ namespace IptablesCtl.IO
         {
             var header = Marshal.PtrToStructure<Header>(point);
             int offset = header.size;
-            var optPoint = point + Sizes.Align(Sizes.HeaderLen);                        
+            var optPoint = point + Sizes.Align(Sizes.HeaderLen);
             match = header.name.ToLower() switch
             {
                 MatchTypes.TCP => new TcpMatchBuilder(Marshal.PtrToStructure<TcpOptions>(optPoint)).Build(),
@@ -489,7 +489,7 @@ namespace IptablesCtl.IO
             Marshal.StructureToPtr(header, point, true);
             //options
             var optPoint = point + Sizes.Align(Sizes.HeaderLen);
-            object options = null;
+            object options = null;// ACCEPT and DROP not need options 
             switch (target.Name)
             {
                 case TargetTypes.SNAT:
@@ -501,16 +501,18 @@ namespace IptablesCtl.IO
                 case TargetTypes.MASQUERADE:
                     options = new MasqueradeTargetBuilder(target).BuildNative();
                     break;
+                case TargetTypes.LOG:
+                    options = new LogTargetBuilder(target).BuildNative();
+                    break;
+                case TargetTypes.REDIRECT:
+                    options = new RedirectTargetBuilder(target).BuildNative();
+                    break;
+                case TargetTypes.REJECT:
+                    options = new RejectTargetBuilder(target).BuildNative();
+                    break;
                 default:
                     options = SetTargetOptions(target);
-                    break;
-                    /*
-                    TargetTypes.LOG => LogTarget.FromOptions(Marshal.PtrToStructure<LogOptions>(optPoint)),
-                    TargetTypes.MASQUERADE => MasqueradeTarget.FromOptions(Marshal.PtrToStructure<NatOptions>(optPoint)),
-                    TargetTypes.REDIRECT => RedirectTarget.FromOptions(Marshal.PtrToStructure<NatOptions>(optPoint)),
-                    TargetTypes.REJECT => RejectTarget.FromOptions(Marshal.PtrToStructure<RejectOptions>(optPoint)),
-                    var name when string.IsNullOrEmpty(name) => StandartTarget(VerdictTrsfm(Marshal.PtrToStructure<int>(optPoint))),
-                    */
+                    break;                    
             };
             if (options != null)
             {

@@ -122,7 +122,7 @@ namespace IptablesCtl.Models.Builders
             options.range_size = 1;
             if (snat.TryGetValue(TO_SOURCE_OPT, out var src))
             {
-                var range = src.ParseIpProtoRange();
+                var range = src.ToIpProtoRange();
                 options.ranges[0].min_ip = ReverceEndian(range.minIp);
                 options.ranges[0].max_ip = ReverceEndian(range.maxIp);
                 options.ranges[0].min_proto = ReverceEndian(range.minP);

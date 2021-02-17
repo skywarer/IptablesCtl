@@ -48,7 +48,7 @@ namespace IptablesCtl.Models.Builders
             TosOptions opt = new TosOptions();
             if (match.TryGetOption(TOS_OPT, out var options))
             {
-                var masked = options.Value.ParseMasked('/');
+                var masked = options.Value.ToMaskedProperty('/',$"{byte.MaxValue}");
                 opt.value = byte.Parse(masked.Value);
                 opt.mask = string.IsNullOrEmpty(masked.Mask) ? byte.MaxValue : byte.Parse(masked.Mask);
                 if (options.Inverted) opt.invert |= TosOptions.XT_TOS_INV;
