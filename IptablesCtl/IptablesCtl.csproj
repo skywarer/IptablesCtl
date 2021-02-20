@@ -5,6 +5,11 @@
     <LangVersion>default</LangVersion>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Version>0.0.1</Version>
+    <Authors>Styagkin Ilya</Authors>
+    <Company />
+    <Description>Management iptables via the implementation libip4tc</Description>
+    <PackageReleaseNotes>beta version</PackageReleaseNotes>
   </PropertyGroup>
   
  </Project>
