@@ -565,6 +565,18 @@ namespace IptablesCtl.IO
         {
             Libiptc4.iptc_free(_handle);
         }
+
+        /// <summary>
+        /// Delete from chain 
+        /// </summary>
+        /// <param name="chain"></param>
+        /// <param name="number">start with 1</param>
+        /// <exception cref="IptException"></exception>
+        public IptCounters GetCounters(string chain, uint number)
+        {
+            IntPtr cntPtr = Libiptc4.iptc_read_counter(chain, number, _handle);
+            return Marshal.PtrToStructure<IptCounters>(cntPtr);
+        }
     }
 
 }

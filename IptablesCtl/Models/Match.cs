@@ -21,7 +21,7 @@ namespace IptablesCtl.Models
 
         public Match(string name, bool needKey = false, byte revision = 0) : this(name,needKey,ImmutableDictionary<string, string>.Empty,revision)
         {
-            
+
         }
 
         public Match(string name, bool needKey, IDictionary<string, string> prop, byte revision = 0) : base(prop)

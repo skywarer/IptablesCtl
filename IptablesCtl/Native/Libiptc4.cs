@@ -6,8 +6,8 @@ namespace IptablesCtl.Native
     internal static class Libiptc4
     {
         [DllImport("libip4tc.so")]
-        public static extern IntPtr iptc_init(string tablename);
-
+        public static extern IntPtr iptc_init(string tablename);      
+        
         [DllImport("libip4tc.so")]
         public static extern void iptc_free(IntPtr handle);
 
@@ -21,7 +21,7 @@ namespace IptablesCtl.Native
         public static extern IntPtr iptc_next_chain(IntPtr handle);
         
         [DllImport("libip4tc.so", CharSet = CharSet.Ansi)]
-        public static extern IntPtr iptc_read_counter([MarshalAs(UnmanagedType.LPStr, SizeConst = 32)] string label, uint num, IntPtr handle);
+        public static extern IntPtr iptc_read_counter([MarshalAs(UnmanagedType.LPStr, SizeConst = 32)] string label, uint num, IntPtr handle);        
 
         [DllImport("libip4tc.so")]
         public static extern int iptc_builtin(string chain, IntPtr handle);

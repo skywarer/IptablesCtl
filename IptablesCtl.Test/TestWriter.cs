@@ -4,6 +4,7 @@ using Xunit;
 using IptablesCtl.IO;
 using IptablesCtl.Models;
 using IptablesCtl.Models.Builders;
+using System.Runtime.InteropServices;
 
 namespace IptablesCtl.Test
 {
@@ -43,7 +44,7 @@ namespace IptablesCtl.Test
             System.Console.WriteLine(rule);
             using (var wr = new IptWrapper(Tables.FILTER))
             {
-                wr.AppendRule(Chains.INPUT, rule);
+                wr.AppendRule("Chains.INPUT", rule);
                 var rules = wr.GetRules(Chains.INPUT);
                 rule = rules.First();
                 System.Console.WriteLine(rule);
@@ -87,7 +88,7 @@ namespace IptablesCtl.Test
         public void WriteRedirectTarget()
         {
             var redirectTarget = new RedirectTargetBuilder()
-            .SetRedirectWithProto(1024,31000).Build();
+            .SetRedirectWithProto(1024, 31000).Build();
             var rule = new RuleBuilder()
                 .SetIp4Src("192.168.3.2/23")
                 .SetIp4Dst("192.168.3/24")
@@ -246,6 +247,11 @@ namespace IptablesCtl.Test
                 var target = rule.Target;
                 Assert.NotEmpty(rules);
                 Assert.Equal(TargetTypes.ACCEPT, target.Name);
+            }
+            using (var wr = new IptWrapper(Tables.NAT))
+            {
+                var cnt = wr.GetCounters(Chains.POSTROUTING, 1);
+                Console.WriteLine(cnt.byte_cnt);
             }
         }
 
@@ -551,6 +557,6 @@ namespace IptablesCtl.Test
                 Assert.NotEmpty(rules);
                 Assert.Equal(TargetTypes.ACCEPT, target.Name);
             }
-        }        
+        }
     }
 }
