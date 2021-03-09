@@ -44,7 +44,7 @@ namespace IptablesCtl.Test
                 .SetProto("tCp")
                 .Accept();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper(Tables.FILTER))
+            using (var wr = new IptTransaction(Tables.FILTER))
             {
                 wr.AppendRule("INPUT", rule);
                 var rules = wr.GetRules(Chains.INPUT);
@@ -73,7 +73,7 @@ namespace IptablesCtl.Test
                 .SetTarget(snatTarget)
                 .Build();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper(Tables.NAT))
+            using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.AppendRule(Chains.POSTROUTING, rule);
                 var rules = wr.GetRules(Chains.POSTROUTING);
@@ -95,7 +95,7 @@ namespace IptablesCtl.Test
                 .SetTarget(snatTarget)
                 .Build();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper(Tables.NAT))
+            using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.AppendRule(Chains.POSTROUTING, rule);
                 var rules = wr.GetRules(Chains.POSTROUTING);
@@ -122,7 +122,7 @@ namespace IptablesCtl.Test
                 .SetTarget(redirectTarget)
                 .Build();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper(Tables.NAT))
+            using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.AppendRule(Chains.OUTPUT, rule);
                 var rules = wr.GetRules(Chains.OUTPUT);
@@ -149,7 +149,7 @@ namespace IptablesCtl.Test
                 .SetTarget(rejectTarget)
                 .Build();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper())
+            using (var wr = new IptTransaction())
             {
                 wr.AppendRule(Chains.OUTPUT, rule);
                 var rules = wr.GetRules(Chains.OUTPUT);
@@ -176,7 +176,7 @@ namespace IptablesCtl.Test
                 .SetTarget(dnatTarget)
                 .Build();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper(Tables.NAT))
+            using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.AppendRule(Chains.PREROUTING, rule);
                 var rules = wr.GetRules(Chains.PREROUTING);
@@ -200,7 +200,7 @@ namespace IptablesCtl.Test
                 .SetTarget(dnatTarget)
                 .Build();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper(Tables.NAT))
+            using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.AppendRule(Chains.PREROUTING, rule);
                 var rules = wr.GetRules(Chains.PREROUTING);
@@ -224,7 +224,7 @@ namespace IptablesCtl.Test
                 .SetTarget(dnatTarget)
                 .Build();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper(Tables.NAT))
+            using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.AppendRule(Chains.PREROUTING, rule);
                 var rules = wr.GetRules(Chains.PREROUTING);
@@ -252,7 +252,7 @@ namespace IptablesCtl.Test
                 .SetTarget(msqrdTarget)
                 .Build();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper(Tables.NAT))
+            using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.AppendRule(Chains.POSTROUTING, rule);
                 var rules = wr.GetRules(Chains.POSTROUTING);
@@ -280,7 +280,7 @@ namespace IptablesCtl.Test
                 .SetTarget(logTarget)
                 .Build();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper())
+            using (var wr = new IptTransaction())
             {
                 wr.AppendRule(Chains.INPUT, rule);
                 var rules = wr.GetRules(Chains.INPUT);
@@ -308,7 +308,7 @@ namespace IptablesCtl.Test
                 .AddMatch(tcpMatch)
                 .Accept();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper(Tables.NAT))
+            using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.AppendRule(Chains.POSTROUTING, rule);
                 var rules = wr.GetRules(Chains.POSTROUTING);
@@ -320,7 +320,7 @@ namespace IptablesCtl.Test
                 Assert.NotEmpty(rules);
                 Assert.Equal(TargetTypes.ACCEPT, target.Name);
             }
-            using (var wr = new IptWrapper(Tables.NAT))
+            using (var wr = new IptTransaction(Tables.NAT))
             {
                 var cnt = wr.GetCounters(Chains.POSTROUTING, 1);
                 Console.WriteLine(cnt.byte_cnt);
@@ -353,7 +353,7 @@ namespace IptablesCtl.Test
                 .SetProto("tCp")
                 .AddMatch(tcpMatch2)
                 .Accept();
-            using (var wr = new IptWrapper(Tables.NAT))
+            using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.AppendRule(Chains.POSTROUTING, rule);
                 var rules = wr.GetRules(Chains.POSTROUTING);
@@ -364,7 +364,7 @@ namespace IptablesCtl.Test
                 Assert.NotEmpty(rules);
                 Assert.Equal(TargetTypes.ACCEPT, target.Name);
             }
-            using (var wr = new IptWrapper(Tables.NAT))
+            using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.ReplaceRule(Chains.POSTROUTING, 1, rule2);
                 var rules = wr.GetRules(Chains.POSTROUTING);
@@ -391,7 +391,7 @@ namespace IptablesCtl.Test
                 .SetProto("tCp")
                 .AddMatch(tcpMatch)
                 .Accept();
-            using (var wr = new IptWrapper(Tables.NAT))
+            using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.AppendRule(Chains.POSTROUTING, rule);
                 var rules = wr.GetRules(Chains.POSTROUTING);
@@ -403,7 +403,7 @@ namespace IptablesCtl.Test
                 Assert.Equal(TargetTypes.ACCEPT, target.Name);
             }
 
-            using (var wr = new IptWrapper(Tables.NAT))
+            using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.DeleteRule(Chains.POSTROUTING, 1);
                 var rules = wr.GetRules(Chains.POSTROUTING);
@@ -425,7 +425,7 @@ namespace IptablesCtl.Test
                 .AddMatch(udpMatch)
                 .Accept();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper(Tables.FILTER))
+            using (var wr = new IptTransaction(Tables.FILTER))
             {
                 wr.AppendRule(Chains.FORWARD, rule);
                 var rules = wr.GetRules(Chains.FORWARD);
@@ -449,7 +449,7 @@ namespace IptablesCtl.Test
                 .AddMatch(udpMatch)
                 .Accept();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper(Tables.FILTER))
+            using (var wr = new IptTransaction(Tables.FILTER))
             {
                 wr.AppendRule(Chains.FORWARD, rule);
                 var rules = wr.GetRules(Chains.FORWARD);
@@ -473,7 +473,7 @@ namespace IptablesCtl.Test
                 .AddMatch(icmpMatch)
                 .Accept();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper(Tables.FILTER))
+            using (var wr = new IptTransaction(Tables.FILTER))
             {
                 wr.AppendRule(Chains.FORWARD, rule);
                 var rules = wr.GetRules(Chains.FORWARD);
@@ -496,7 +496,7 @@ namespace IptablesCtl.Test
                 .AddMatch(limitMatch)
                 .Accept();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper(Tables.FILTER))
+            using (var wr = new IptTransaction(Tables.FILTER))
             {
                 wr.AppendRule(Chains.FORWARD, rule);
                 var rules = wr.GetRules(Chains.FORWARD);
@@ -519,7 +519,7 @@ namespace IptablesCtl.Test
                 .AddMatch(macMatch)
                 .Accept();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper(Tables.FILTER))
+            using (var wr = new IptTransaction(Tables.FILTER))
             {
                 wr.AppendRule(Chains.FORWARD, rule);
                 var rules = wr.GetRules(Chains.FORWARD);
@@ -541,7 +541,7 @@ namespace IptablesCtl.Test
                 .AddMatch(markMatch)
                 .Accept();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper(Tables.MANGLE))
+            using (var wr = new IptTransaction(Tables.MANGLE))
             {
                 wr.AppendRule(Chains.INPUT, rule);
                 var rules = wr.GetRules(Chains.INPUT);
@@ -559,7 +559,7 @@ namespace IptablesCtl.Test
                 .AddMatch(markMatch)
                 .Accept();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper(Tables.MANGLE))
+            using (var wr = new IptTransaction(Tables.MANGLE))
             {
                 wr.AppendRule(Chains.INPUT, rule);
                 var rules = wr.GetRules(Chains.INPUT);
@@ -583,7 +583,7 @@ namespace IptablesCtl.Test
                 .AddMatch(multiportMatch)
                 .Accept();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper())
+            using (var wr = new IptTransaction())
             {
                 wr.AppendRule(Chains.INPUT, rule);
                 var rules = wr.GetRules(Chains.INPUT);
@@ -609,7 +609,7 @@ namespace IptablesCtl.Test
                 .AddMatch(multiportMatch)
                 .Accept();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper())
+            using (var wr = new IptTransaction())
             {
                 wr.AppendRule(Chains.OUTPUT, rule);
                 var rules = wr.GetRules(Chains.OUTPUT);
@@ -635,7 +635,7 @@ namespace IptablesCtl.Test
                 .AddMatch(tosMatch)
                 .Accept();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper())
+            using (var wr = new IptTransaction())
             {
                 wr.AppendRule(Chains.OUTPUT, rule);
                 var rules = wr.GetRules(Chains.OUTPUT);
@@ -659,7 +659,7 @@ namespace IptablesCtl.Test
                 .AddMatch(tosMatch)
                 .Accept();
             System.Console.WriteLine(rule);
-            using (var wr = new IptWrapper())
+            using (var wr = new IptTransaction())
             {
                 wr.AppendRule(Chains.OUTPUT, rule);
                 var rules = wr.GetRules(Chains.OUTPUT);
@@ -670,6 +670,41 @@ namespace IptablesCtl.Test
                 var target = rule.Target;
                 Assert.NotEmpty(rules);
                 Assert.Equal(TargetTypes.ACCEPT, target.Name);
+            }
+        }
+
+        [Fact]
+        public void WritePairRule()
+        {
+            ushort forwardPort = 50500;
+            var forwardPortMatch = new TcpMatchBuilder().SetDstPort(forwardPort).Build();
+            // правило 
+            var ktsDNatTarget = new DNatTargetBuilder().SetDestination("192.168.4.4", "192.168.4.4", 40, 40).Build();
+            var DnatRule = new RuleBuilder()
+                .SetProto("tcp")
+                .SetIp4Src("172.25.44.4")
+                .AddMatch(forwardPortMatch)
+                .SetTarget(ktsDNatTarget).Build();
+            var ktsPortMatch = new TcpMatchBuilder().SetDstPort(40).Build();
+            var DnatRule2 = new RuleBuilder()
+                .SetProto("tcp")
+                .SetIp4Src("172.25.44.5")
+                .AddMatch(forwardPortMatch)
+                .SetTarget(ktsDNatTarget).Build();
+            var ktsMasqTarget = new MasqueradeTargetBuilder().Build();
+            var MasqueradeRule = new RuleBuilder()
+                .SetProto("tcp")
+                .SetIp4Dst("192.168.4.4")
+                .AddMatch(ktsPortMatch)
+                .SetTarget(ktsMasqTarget).Build();
+            System.Console.WriteLine(DnatRule);
+            System.Console.WriteLine(MasqueradeRule);
+            using (var wr = new IptTransaction(Tables.NAT))
+            {
+                wr.AppendRule(Chains.PREROUTING, DnatRule);
+                wr.AppendRule(Chains.PREROUTING, DnatRule2);
+                wr.AppendRule(Chains.POSTROUTING, MasqueradeRule);
+                wr.Commit();
             }
         }
     }

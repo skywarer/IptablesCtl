@@ -8,14 +8,14 @@ using IptablesCtl.Models;
 using IptablesCtl.Models.Builders;
 namespace IptablesCtl.IO
 {
-    public class IptWrapper : IDisposable
+    public class IptTransaction : IDisposable
     {
         /// <summary>
         /// Current Table
         /// </summary>
         public string Table { get; }
         IntPtr _handle;
-        public IptWrapper(string tableName = Tables.FILTER)
+        public IptTransaction(string tableName = Tables.FILTER)
         {
             Table = tableName;
             _handle = Libiptc4.iptc_init(Table);
@@ -353,6 +353,30 @@ namespace IptablesCtl.IO
             }
         }
 
+        public bool Commit()
+        {
+            bool success = Libiptc4.iptc_commit(_handle) == 1;
+            if (!success)
+            {
+                int errno = Marshal.GetLastWin32Error();// it`s works
+                string errStr = Marshal.PtrToStringAnsi(Libiptc4.iptc_strerror(errno));
+                throw new IptException($"{errStr} (errcode: {errno})");
+            }
+            return success;
+        }
+
+        bool EnsureSuccess(int result)
+        {
+            bool success = result == 1;
+            if (!success)
+            {
+                int errno = Marshal.GetLastWin32Error();
+                string errStr = Marshal.PtrToStringAnsi(Libiptc4.iptc_strerror(errno));
+                throw new IptException($"{errStr} (errcode: {errno})");
+            }
+            return success;
+        }
+
         /// <summary>
         /// Append rule to chain
         /// </summary>
@@ -366,7 +390,8 @@ namespace IptablesCtl.IO
             try
             {
                 int result = Libiptc4.iptc_append_entry(chain, point, _handle);
-                CommitResultOrThrowException(result);
+                //CommitResultOrThrowException(result);
+                EnsureSuccess(result);
             }
             finally
             {
@@ -379,7 +404,7 @@ namespace IptablesCtl.IO
         /// </summary>
         /// <param name="match"></param>
         /// <returns></returns>
-        public virtual object SetMatchOptions(Match match)
+        protected virtual object SetMatchOptions(Match match)
         {
             return null;
         }
@@ -460,7 +485,7 @@ namespace IptablesCtl.IO
         /// </summary>
         /// <param name="target"></param>
         /// <returns></returns>
-        public virtual object SetTargetOptions(Target target)
+        protected virtual object SetTargetOptions(Target target)
         {
             return null;
         }
@@ -539,7 +564,8 @@ namespace IptablesCtl.IO
             try
             {
                 int result = Libiptc4.iptc_replace_entry(chain, point, number - 1, _handle);
-                CommitResultOrThrowException(result);
+                //CommitResultOrThrowException(result);
+                EnsureSuccess(result);
             }
             finally
             {
@@ -558,7 +584,8 @@ namespace IptablesCtl.IO
             // documentation https://www.opennet.ru/docs/HOWTO/Querying-libiptc-HOWTO/ 
             // wrong with num start 1 !!!!
             int result = Libiptc4.iptc_delete_num_entry(chain, number - 1, _handle);
-            CommitResultOrThrowException(result);
+            //CommitResultOrThrowException(result);
+            EnsureSuccess(result);
         }
 
         public void Dispose()
