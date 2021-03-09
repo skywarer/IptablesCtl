@@ -20,12 +20,12 @@ namespace IptablesCtl.Models.Builders
         public override void SetOptions(UdpOptions options)
         {
             //source-port
-            if (options.spts[0] > 0)
+            if (options.spts[0] > 0 || options.spts[1] < ushort.MaxValue)
             {
                 SetSrcPort(options.spts[0], options.spts[1], (options.invflags & UdpOptions.XT_UDP_INV_SRCPT) > 0);
             }
             //destination-port
-            if (options.dpts[0] > 0)
+            if (options.dpts[0] > 0 || options.dpts[1] < ushort.MaxValue)
             {
                 SetDstPort(options.dpts[0], options.dpts[1], (options.invflags & UdpOptions.XT_UDP_INV_DSTPT) > 0);
             }
@@ -60,9 +60,9 @@ namespace IptablesCtl.Models.Builders
         public override UdpOptions BuildNative()
         {
             var match = Build();
-            UdpOptions opt = new UdpOptions();
+            UdpOptions opt = UdpOptions.Default();
             //source-port
-            if(match.TryGetOption(SPORT_OPT, out var options))
+            if (match.TryGetOption(SPORT_OPT, out var options))
             {
                 var range = options.Value.ToRangeProperty(':');
                 opt.spts = new ushort[] { ushort.Parse(range.Left), ushort.Parse(range.Rigt) };
