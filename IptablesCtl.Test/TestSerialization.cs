@@ -58,7 +58,7 @@ namespace IptablesCtl.Test
         public void RuleSerializeTest()
         {
             "iptables -A INPUT -p tcp --sport 1000 --dport 1002 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);

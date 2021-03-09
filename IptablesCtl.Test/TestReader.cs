@@ -23,7 +23,7 @@ namespace IptablesCtl.Test
         {
             // tcp
             "iptables -A INPUT -p tcp -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -32,7 +32,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D INPUT -p tcp -j ACCEPT".Bash();
             "iptables -A INPUT ! -p tcp -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -42,7 +42,7 @@ namespace IptablesCtl.Test
             "iptables -D INPUT ! -p tcp -j ACCEPT".Bash();
             // udp
             "iptables -A INPUT -p udp -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -57,7 +57,7 @@ namespace IptablesCtl.Test
         {
             // tcp
             "iptables -A INPUT -s 192.168.1.1 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -66,7 +66,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D INPUT -s 192.168.1.1 -j ACCEPT".Bash();
             "iptables -A INPUT ! -s 192.168.1.1/24 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -81,7 +81,7 @@ namespace IptablesCtl.Test
         {
             // tcp
             "iptables -A INPUT -d 192.168.1.1 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -90,7 +90,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D INPUT -d 192.168.1.1 -j ACCEPT".Bash();
             "iptables -A INPUT ! -d 192.168.1.1/24 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -105,7 +105,7 @@ namespace IptablesCtl.Test
         {
             // tcp
             "iptables -A INPUT -i eno10 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -114,7 +114,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D INPUT -i eno10 -j ACCEPT".Bash();
             "iptables -A INPUT -i enf+ -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -123,7 +123,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D INPUT -i enf+ -j ACCEPT".Bash();
             "iptables -A INPUT ! -i eno10 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -138,7 +138,7 @@ namespace IptablesCtl.Test
         {
             // tcp
             "iptables -A OUTPUT -o eno10 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -147,7 +147,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D OUTPUT -o eno10 -j ACCEPT".Bash();
             "iptables -A OUTPUT -o enf+ -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -156,7 +156,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D OUTPUT -o enf+ -j ACCEPT".Bash();
             "iptables -A OUTPUT ! -o eno10 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -170,7 +170,7 @@ namespace IptablesCtl.Test
         public void FragmentMatchTest()
         {
             "iptables -A OUTPUT -f -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -179,7 +179,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D OUTPUT -f -j ACCEPT".Bash();
             "iptables -A OUTPUT ! -f -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -195,7 +195,7 @@ namespace IptablesCtl.Test
             // Add test for port range
             // sport/dport
             "iptables -A INPUT -p tcp --sport 1000 --dport 1002 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -209,7 +209,7 @@ namespace IptablesCtl.Test
             "iptables -D INPUT -p tcp --sport 1000 --dport 1002 -j ACCEPT".Bash();
             // sport/dport
             "iptables -A INPUT -p tcp --sport 1000:1003 --dport 1002:1007 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -222,7 +222,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D INPUT -p tcp --sport 1000:1003 --dport 1002:1007 -j ACCEPT".Bash();
             "iptables -A INPUT -p tcp ! --sport 1000 ! --dport 1002 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -236,7 +236,7 @@ namespace IptablesCtl.Test
             "iptables -D INPUT -p tcp ! --sport 1000 ! --dport 1002 -j ACCEPT".Bash();
             //tcp-flags
             "iptables -A INPUT -p tcp --tcp-flags syn,fin,ack syn -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -250,7 +250,7 @@ namespace IptablesCtl.Test
             "iptables -D INPUT -p tcp --tcp-flags syn,fin,ack syn -j ACCEPT".Bash();
 
             "iptables -A INPUT -p tcp ! --tcp-flags syn,fin,ack syn -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -264,7 +264,7 @@ namespace IptablesCtl.Test
             "iptables -D INPUT -p tcp ! --tcp-flags syn,fin,ack syn -j ACCEPT".Bash();
 
             "iptables -A INPUT -p tcp --tcp-flags all none -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -278,7 +278,7 @@ namespace IptablesCtl.Test
             "iptables -D INPUT -p tcp --tcp-flags all none -j ACCEPT".Bash();
 
             "iptables -A INPUT -p tcp --tcp-flags none all -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -292,7 +292,7 @@ namespace IptablesCtl.Test
             "iptables -D INPUT -p tcp --tcp-flags none all -j ACCEPT".Bash();
 
             "iptables -A INPUT -p tcp ! --tcp-flags all none -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -306,7 +306,7 @@ namespace IptablesCtl.Test
             "iptables -D INPUT -p tcp ! --tcp-flags all none -j ACCEPT".Bash();
             //syn
             "iptables -A INPUT -p tcp --syn -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -320,7 +320,7 @@ namespace IptablesCtl.Test
             "iptables -D INPUT -p tcp --syn -j ACCEPT".Bash();
 
             "iptables -A INPUT -p tcp ! --syn -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -334,7 +334,7 @@ namespace IptablesCtl.Test
             "iptables -D INPUT -p tcp ! --syn -j ACCEPT".Bash();
             // option
             "iptables -A INPUT -p tcp --tcp-option 16 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -347,7 +347,7 @@ namespace IptablesCtl.Test
             "iptables -D INPUT -p tcp --tcp-option 16 -j ACCEPT".Bash();
 
             "iptables -A INPUT -p tcp ! --tcp-option 16 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -365,7 +365,7 @@ namespace IptablesCtl.Test
         {
             // sport/dport
             "iptables -A INPUT -p udp --sport 1000 --dport 1002 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -379,7 +379,7 @@ namespace IptablesCtl.Test
             "iptables -D INPUT -p udp --sport 1000 --dport 1002 -j ACCEPT".Bash();
 
             "iptables -A INPUT -p udp ! --sport 1000 ! --dport 1002 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -398,7 +398,7 @@ namespace IptablesCtl.Test
         {
             // icmp-type
             "iptables -A INPUT -p icmp --icmp-type 18 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -411,7 +411,7 @@ namespace IptablesCtl.Test
             "iptables -D INPUT -p icmp --icmp-type 18 -j ACCEPT".Bash();
 
             "iptables -A INPUT -p icmp --icmp-type timestamp-reply -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -424,7 +424,7 @@ namespace IptablesCtl.Test
             "iptables -D INPUT -p icmp --icmp-type timestamp-reply -j ACCEPT".Bash();
 
             "iptables -A INPUT -p icmp --icmp-type any -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -437,7 +437,7 @@ namespace IptablesCtl.Test
             "iptables -D INPUT -p icmp --icmp-type any -j ACCEPT".Bash();
 
             "iptables -A INPUT -p icmp -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -447,7 +447,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D INPUT -p icmp -j ACCEPT".Bash();
             "iptables -A INPUT -p icmp ! --icmp-type 3 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -465,7 +465,7 @@ namespace IptablesCtl.Test
         {
             // sport/dport
             "iptables -A INPUT -m limit -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -477,7 +477,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D INPUT -m limit -j ACCEPT".Bash();
             "iptables -A INPUT -m limit --limit 10/m -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -495,7 +495,7 @@ namespace IptablesCtl.Test
         {
             // sport/dport
             "iptables -A INPUT -m mac --mac-source 01:02:0F:A4:34:01 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -507,7 +507,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D INPUT -m mac --mac-source 01:02:0F:A4:34:01 -j ACCEPT".Bash();
             "iptables -A INPUT -m mac ! --mac-source 01:02:0F:A4:34:01 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -525,7 +525,7 @@ namespace IptablesCtl.Test
         {
             // sport/dport
             "iptables -A INPUT -m mark --mark 8 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -537,7 +537,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D INPUT -m mark --mark 8 -j ACCEPT".Bash();
             "iptables -A INPUT -m mark --mark 8/10 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -549,7 +549,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D INPUT -m mark --mark 8/10 -j ACCEPT".Bash();
             "iptables -A INPUT -m mark ! --mark 8 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -567,7 +567,7 @@ namespace IptablesCtl.Test
         {
             // sport
             "iptables -A INPUT -p tcp -m multiport --source-port 22,53,80,110,500:510 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -581,7 +581,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D INPUT -p tcp -m multiport --source-port 22,53,80,110,500:510 -j ACCEPT".Bash();
             "iptables -A INPUT -p tcp -m multiport ! --source-port 22,53,80,110 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -595,7 +595,7 @@ namespace IptablesCtl.Test
             "iptables -D INPUT -p tcp -m multiport ! --source-port 22,53,80,110 -j ACCEPT".Bash();
             // dport
             "iptables -A INPUT -p tcp -m multiport --destination-port 22,53,80,110 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -608,7 +608,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D INPUT -p tcp -m multiport --destination-port 22,53,80,110 -j ACCEPT".Bash();
             "iptables -A INPUT -p tcp -m multiport ! --destination-port 22,53,80,110 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -622,7 +622,7 @@ namespace IptablesCtl.Test
             "iptables -D INPUT -p tcp -m multiport ! --destination-port 22,53,80,110 -j ACCEPT".Bash();
             // port
             "iptables -A INPUT -p tcp -m multiport --port 22,53,80,110 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -635,7 +635,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D INPUT -p tcp -m multiport --port 22,53,80,110 -j ACCEPT".Bash();
             "iptables -A INPUT -p tcp -m multiport ! --port 22,53,80,110 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -654,7 +654,7 @@ namespace IptablesCtl.Test
         {
             // uid-owner
             "iptables -A OUTPUT -m owner --uid-owner 500 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -666,7 +666,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D OUTPUT -m owner --uid-owner 500 -j ACCEPT".Bash();
             "iptables -A OUTPUT -m owner --uid-owner 500-700 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -678,7 +678,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D OUTPUT -m owner --uid-owner 500-700 -j ACCEPT".Bash();
             "iptables -A OUTPUT -m owner ! --uid-owner 500 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -691,7 +691,7 @@ namespace IptablesCtl.Test
             "iptables -D OUTPUT -m owner ! --uid-owner 500 -j ACCEPT".Bash();
             // gid-owner
             "iptables -A OUTPUT -m owner --gid-owner 5 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -703,7 +703,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D OUTPUT -m owner --gid-owner 5 -j ACCEPT".Bash();
             "iptables -A OUTPUT -m owner --gid-owner 5-7 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -715,7 +715,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D OUTPUT -m owner --gid-owner 5-7 -j ACCEPT".Bash();
             "iptables -A OUTPUT -m owner ! --gid-owner 5 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -728,7 +728,7 @@ namespace IptablesCtl.Test
             "iptables -D OUTPUT -m owner ! --gid-owner 5 -j ACCEPT".Bash();
             // socket-exists
             "iptables -A OUTPUT -m owner --socket-exists -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -740,7 +740,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D OUTPUT -m owner --socket-exists -j ACCEPT".Bash();
             "iptables -A OUTPUT -m owner ! --socket-exists -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -758,7 +758,7 @@ namespace IptablesCtl.Test
         {
             // sport/dport
             "iptables -A INPUT -p tcp -m tos --tos 10 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -770,7 +770,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D INPUT -p tcp -m tos --tos 10 -j ACCEPT".Bash();
             "iptables -A INPUT -p tcp -m tos --tos 10/2 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -782,7 +782,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D INPUT -p tcp -m tos --tos 10/2 -j ACCEPT".Bash();
             "iptables -A INPUT -p tcp -m tos --tos Minimize-Delay -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -794,7 +794,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D INPUT -p tcp -m tos --tos Minimize-Delay -j ACCEPT".Bash();
             "iptables -A INPUT -p tcp -m tos ! --tos 0x16 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -812,7 +812,7 @@ namespace IptablesCtl.Test
         {
             // sport/dport
             "iptables -A INPUT -m ttl --ttl-eq 60 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -824,7 +824,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D INPUT -m ttl --ttl-eq 60 -j ACCEPT".Bash();
             "iptables -A INPUT -m ttl ! --ttl-eq 60 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -836,7 +836,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D INPUT -m ttl ! --ttl-eq 60 -j ACCEPT".Bash();
             "iptables -A INPUT -m ttl --ttl-gt 60 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -848,7 +848,7 @@ namespace IptablesCtl.Test
             }
             "iptables -D INPUT -m ttl --ttl-gt 60 -j ACCEPT".Bash();
             "iptables -A INPUT -m ttl --ttl-lt 60 -j ACCEPT".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -868,7 +868,7 @@ namespace IptablesCtl.Test
         public void VerdictTargetTest(string verdict)
         {
             $"iptables -A INPUT -j {verdict}".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -885,7 +885,7 @@ namespace IptablesCtl.Test
         {
 
             $"iptables -t nat -A OUTPUT -o eno6 -j DNAT --to-destination 192.168.1.1-192.168.1.10".Bash();
-            using (var wr = new IO.IptWrapper(IO.Tables.NAT))
+            using (var wr = new IO.IptTransaction(IO.Tables.NAT))
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -898,7 +898,7 @@ namespace IptablesCtl.Test
             $"iptables -t nat -D OUTPUT -o eno6 -j DNAT --to-destination 192.168.1.1-192.168.1.10".Bash();
 
             $"iptables -t nat -A OUTPUT -p tcp --dport 10000 -j DNAT --to-destination 192.168.1.1-192.168.1.10:200-300".Bash();
-            using (var wr = new IO.IptWrapper(IO.Tables.NAT))
+            using (var wr = new IO.IptTransaction(IO.Tables.NAT))
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -910,7 +910,7 @@ namespace IptablesCtl.Test
             }
             $"iptables -t nat -D OUTPUT -p tcp --dport 10000 -j DNAT --to-destination 192.168.1.1-192.168.1.10:200-300".Bash();
             $"iptables -t nat -A OUTPUT -p tcp --dport 10000 -j DNAT --to-destination 192.168.1.1:89".Bash();
-            using (var wr = new IO.IptWrapper(IO.Tables.NAT))
+            using (var wr = new IO.IptTransaction(IO.Tables.NAT))
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -922,7 +922,7 @@ namespace IptablesCtl.Test
             }
             $"iptables -t nat -D OUTPUT -p tcp --dport 10000 -j DNAT --to-destination 192.168.1.1:89".Bash();
             $"iptables -t nat -A OUTPUT -p tcp --dport 10000 -j DNAT --to-destination :89".Bash();
-            using (var wr = new IO.IptWrapper(IO.Tables.NAT))
+            using (var wr = new IO.IptTransaction(IO.Tables.NAT))
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -934,7 +934,7 @@ namespace IptablesCtl.Test
             }
             $"iptables -t nat -D OUTPUT -p tcp --dport 10000 -j DNAT --to-destination :89".Bash();
             $"iptables -t nat -A OUTPUT -p tcp --dport 10000 -j DNAT --to-destination 192.168.1.1 --random".Bash();
-            using (var wr = new IO.IptWrapper(IO.Tables.NAT))
+            using (var wr = new IO.IptTransaction(IO.Tables.NAT))
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -946,7 +946,7 @@ namespace IptablesCtl.Test
             }
             $"iptables -t nat -D OUTPUT -p tcp --dport 10000 -j DNAT --to-destination 192.168.1.1 --random".Bash();
             $"iptables -t nat -A OUTPUT -p tcp --dport 10000 -j DNAT --to-destination 192.168.1.1 --persistent".Bash();
-            using (var wr = new IO.IptWrapper(IO.Tables.NAT))
+            using (var wr = new IO.IptTransaction(IO.Tables.NAT))
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -964,7 +964,7 @@ namespace IptablesCtl.Test
         {
 
             $"iptables -t nat -A INPUT -i eno6 -j SNAT --to-source 192.168.1.1-192.168.1.10".Bash();
-            using (var wr = new IO.IptWrapper(IO.Tables.NAT))
+            using (var wr = new IO.IptTransaction(IO.Tables.NAT))
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -977,7 +977,7 @@ namespace IptablesCtl.Test
             $"iptables -t nat -D INPUT -i eno6 -j SNAT --to-source 192.168.1.1-192.168.1.10".Bash();
 
             $"iptables -t nat -A INPUT -p tcp --sport 10000 -j SNAT --to-source 192.168.1.1-192.168.1.10:200-300".Bash();
-            using (var wr = new IO.IptWrapper(IO.Tables.NAT))
+            using (var wr = new IO.IptTransaction(IO.Tables.NAT))
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -989,7 +989,7 @@ namespace IptablesCtl.Test
             }
             $"iptables -t nat -D INPUT -p tcp --sport 10000 -j SNAT --to-source 192.168.1.1-192.168.1.10:200-300".Bash();
             $"iptables -t nat -A INPUT -p tcp --sport 10000 -j SNAT --to-source 192.168.1.1:89".Bash();
-            using (var wr = new IO.IptWrapper(IO.Tables.NAT))
+            using (var wr = new IO.IptTransaction(IO.Tables.NAT))
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -1001,7 +1001,7 @@ namespace IptablesCtl.Test
             }
             $"iptables -t nat -D INPUT -p tcp --sport 10000 -j SNAT --to-source 192.168.1.1:89".Bash();
             $"iptables -t nat -A INPUT -p tcp --sport 10000 -j SNAT --to-source :89".Bash();
-            using (var wr = new IO.IptWrapper(IO.Tables.NAT))
+            using (var wr = new IO.IptTransaction(IO.Tables.NAT))
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -1013,7 +1013,7 @@ namespace IptablesCtl.Test
             }
             $"iptables -t nat -D INPUT -p tcp --sport 10000 -j SNAT --to-source :89".Bash();
             $"iptables -t nat -A INPUT -p tcp --sport 10000 -j SNAT --to-source 192.168.1.1 --random".Bash();
-            using (var wr = new IO.IptWrapper(IO.Tables.NAT))
+            using (var wr = new IO.IptTransaction(IO.Tables.NAT))
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -1025,7 +1025,7 @@ namespace IptablesCtl.Test
             }
             $"iptables -t nat -D INPUT -p tcp --sport 10000 -j SNAT --to-source 192.168.1.1 --random".Bash();
             $"iptables -t nat -A INPUT -p tcp --sport 10000 -j SNAT --to-source 192.168.1.1 --random-fully".Bash();
-            using (var wr = new IO.IptWrapper(IO.Tables.NAT))
+            using (var wr = new IO.IptTransaction(IO.Tables.NAT))
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -1037,7 +1037,7 @@ namespace IptablesCtl.Test
             }
             $"iptables -t nat -D INPUT -p tcp --sport 10000 -j SNAT --to-source 192.168.1.1 --random-fully".Bash();
             $"iptables -t nat -A INPUT -p tcp --sport 10000 -j SNAT --to-source 192.168.1.1 --persistent".Bash();
-            using (var wr = new IO.IptWrapper(IO.Tables.NAT))
+            using (var wr = new IO.IptTransaction(IO.Tables.NAT))
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -1053,7 +1053,7 @@ namespace IptablesCtl.Test
         public void LogTargetTest()
         {
             $"iptables -A INPUT -j LOG --log-level debug".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -1065,7 +1065,7 @@ namespace IptablesCtl.Test
             }
             $"iptables -D INPUT -j LOG --log-level debug".Bash();
             $"iptables -A INPUT -j LOG --log-prefix log_test".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -1077,7 +1077,7 @@ namespace IptablesCtl.Test
             }
             $"iptables -D INPUT -j LOG --log-prefix log_test".Bash();
             $"iptables -A INPUT -j LOG --log-tcp-sequence".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -1089,7 +1089,7 @@ namespace IptablesCtl.Test
             }
             $"iptables -D INPUT -j LOG --log-tcp-sequence".Bash();
             $"iptables -A INPUT -j LOG --log-tcp-options".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -1101,7 +1101,7 @@ namespace IptablesCtl.Test
             }
             $"iptables -D INPUT -j LOG --log-tcp-options".Bash();
             $"iptables -A INPUT -j LOG --log-ip-options".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -1113,7 +1113,7 @@ namespace IptablesCtl.Test
             }
             $"iptables -D INPUT -j LOG --log-ip-options".Bash();
             $"iptables -A INPUT -j LOG --log-uid".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
                 Assert.NotEmpty(rules);
@@ -1130,7 +1130,7 @@ namespace IptablesCtl.Test
         public void MasqueradeTargetTest()
         {
             $"iptables -t nat -A POSTROUTING -p TCP --sport 1000 -j MASQUERADE --to-ports 1024-31000".Bash();
-            using (var wr = new IO.IptWrapper(IO.Tables.NAT))
+            using (var wr = new IO.IptTransaction(IO.Tables.NAT))
             {
                 var rules = wr.GetRules(IO.Chains.POSTROUTING);
                 Assert.NotEmpty(rules);
@@ -1142,7 +1142,7 @@ namespace IptablesCtl.Test
             }
             $"iptables -t nat -D POSTROUTING -p TCP --sport 1000 -j MASQUERADE --to-ports 1024-31000".Bash();
             $"iptables -t nat -A POSTROUTING -p TCP --sport 1000 -j MASQUERADE --to-ports 1024".Bash();
-            using (var wr = new IO.IptWrapper(IO.Tables.NAT))
+            using (var wr = new IO.IptTransaction(IO.Tables.NAT))
             {
                 var rules = wr.GetRules(IO.Chains.POSTROUTING);
                 Assert.NotEmpty(rules);
@@ -1154,7 +1154,7 @@ namespace IptablesCtl.Test
             }
             $"iptables -t nat -D POSTROUTING -p TCP --sport 1000 -j MASQUERADE --to-ports 1024".Bash();
             $"iptables -t nat -A POSTROUTING -p TCP --sport 1000 -j MASQUERADE --random".Bash();
-            using (var wr = new IO.IptWrapper(IO.Tables.NAT))
+            using (var wr = new IO.IptTransaction(IO.Tables.NAT))
             {
                 var rules = wr.GetRules(IO.Chains.POSTROUTING);
                 Assert.NotEmpty(rules);
@@ -1171,7 +1171,7 @@ namespace IptablesCtl.Test
         public void RedirectTargetTest()
         {
             $"iptables -t nat -A OUTPUT -p TCP --dport 1000 -j REDIRECT --to-ports 1024-31000".Bash();
-            using (var wr = new IO.IptWrapper(IO.Tables.NAT))
+            using (var wr = new IO.IptTransaction(IO.Tables.NAT))
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -1183,7 +1183,7 @@ namespace IptablesCtl.Test
             }
             $"iptables -t nat -D OUTPUT -p TCP --dport 1000 -j REDIRECT --to-ports 1024-31000".Bash();
             $"iptables -t nat -A OUTPUT -p TCP --dport 1000 -j REDIRECT --to-ports 1024".Bash();
-            using (var wr = new IO.IptWrapper(IO.Tables.NAT))
+            using (var wr = new IO.IptTransaction(IO.Tables.NAT))
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -1214,7 +1214,7 @@ namespace IptablesCtl.Test
         public void RejectTargetTest()
         {
             $"iptables -A OUTPUT -p TCP --dport 1000 -j REJECT --reject-with tcp-reset".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
@@ -1226,7 +1226,7 @@ namespace IptablesCtl.Test
             }
             $"iptables -D OUTPUT -p TCP --dport 1000 -j REJECT --reject-with tcp-reset".Bash();
             $"iptables -A OUTPUT -p TCP --dport 1000 -j REJECT --reject-with icmp-host-unreachable".Bash();
-            using (var wr = new IO.IptWrapper())
+            using (var wr = new IO.IptTransaction())
             {
                 var rules = wr.GetRules(IO.Chains.OUTPUT);
                 Assert.NotEmpty(rules);
