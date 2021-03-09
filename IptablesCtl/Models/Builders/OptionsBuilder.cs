@@ -74,14 +74,29 @@ namespace IptablesCtl.Models.Builders
 
         public static ushort ReverceEndian(ushort value)
         {
+            if (value > ushort.MinValue && value < ushort.MaxValue)
+            {
+                return InnerReverceEndian(value);
+            }
+            else { return value; }
+        }
+
+        private static ushort InnerReverceEndian(ushort value)
+        {
             return (ushort)((value << 8) | (value >> 8));
         }
 
         public static uint ReverceEndian(uint value)
         {
-            return (uint)((value >> 24) | (value << 24) |
-                (value >> 8 & 0xFF00) | (value << 8 & 0xFF0000));
+            if (value > uint.MinValue && value < uint.MaxValue)
+            {
+                return InnerReverceEndian(value);
+            }
+            else { return value; }
         }
+
+        private static uint InnerReverceEndian(uint value) => (uint)((value >> 24) | (value << 24) |
+                    (value >> 8 & 0xFF00) | (value << 8 & 0xFF0000));
 
     }
 }

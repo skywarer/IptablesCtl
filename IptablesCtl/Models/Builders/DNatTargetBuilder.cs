@@ -108,7 +108,7 @@ namespace IptablesCtl.Models.Builders
         {
             Target dnat = Build();
             NatOptions options = new NatOptions();
-            options.ranges = new NatRange[] {new NatRange()};
+            options.ranges = new NatRange[] {NatRange.Default()};
             options.range_size = 1;
             if (dnat.TryGetValue(TO_DESTINATION_OPT, out var src))
             {

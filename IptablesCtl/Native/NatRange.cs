@@ -17,6 +17,14 @@ namespace IptablesCtl.Native
         /*litle-endian*/
         public uint min_ip, max_ip;
         /*litle-endian*/
-        public ushort min_proto, max_proto;
+        public ushort min_proto, max_proto;   
+
+        public static NatRange Default()
+        {
+            NatRange range = new NatRange();
+            range.max_proto = ushort.MaxValue;
+            range.max_ip = uint.MaxValue;
+            return range;
+        } 
     }
 };

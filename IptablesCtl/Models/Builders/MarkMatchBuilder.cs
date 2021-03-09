@@ -24,12 +24,20 @@ namespace IptablesCtl.Models.Builders
 
         public override void SetOptions(MarkOptions options)
         {
-            SetMark(options.mark, options.mask < uint.MaxValue ? options.mask : 0, (options.invert & MarkOptions.XT_MARK_INV) > 0);
+            SetMark(options.mark, options.mask, (options.invert & MarkOptions.XT_MARK_INV) > 0);
         }
 
-        public MarkMatchBuilder SetMark(uint mark, uint mask = 0, bool invert = false)
+        public MarkMatchBuilder SetMark(uint mark, uint mask = 63, bool invert = false)
         {
-            AddMaskedProperty(MARK_OPT.ToOptionName(invert), mark, mask, '/');
+            // 63 is default mask
+            if (mask < 63)
+            {
+                AddMaskedProperty(MARK_OPT.ToOptionName(invert), mark, mask, '/');
+            }
+            else
+            {
+                AddProperty(MARK_OPT.ToOptionName(invert), mark);
+            }
             return this;
         }
 
@@ -41,12 +49,15 @@ namespace IptablesCtl.Models.Builders
         public override MarkOptions BuildNative()
         {
             var match = Build();
-            MarkOptions opt = new MarkOptions();
+            MarkOptions opt = MarkOptions.Default();
             if (match.TryGetOption(MARK_OPT, out var options))
             {
-                var masked = options.Value.ToMaskedProperty('/', "0");
+                var masked = options.Value.ToMaskedProperty('/');
                 opt.mark = uint.Parse(masked.Value);
-                opt.mask = uint.Parse(masked.Mask);
+                if (!string.IsNullOrEmpty(masked.Mask))
+                {
+                    opt.mask = uint.Parse(masked.Mask);
+                }
                 if (options.Inverted) opt.invert |= MarkOptions.XT_MARK_INV;
             }
             return opt;

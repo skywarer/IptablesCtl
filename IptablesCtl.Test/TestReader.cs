@@ -536,7 +536,7 @@ namespace IptablesCtl.Test
                 System.Console.WriteLine(rule);
             }
             "iptables -D INPUT -m mark --mark 8 -j ACCEPT".Bash();
-            "iptables -A INPUT -m mark --mark 8/63 -j ACCEPT".Bash();
+            "iptables -A INPUT -m mark --mark 8/10 -j ACCEPT".Bash();
             using (var wr = new IO.IptWrapper())
             {
                 var rules = wr.GetRules(IO.Chains.INPUT);
@@ -544,10 +544,10 @@ namespace IptablesCtl.Test
                 var rule = rules.First();
                 Assert.NotEmpty(rule.Matches);
                 var match = rule.Matches.Where(m => m.Name.Equals(MatchTypes.MARK)).First();
-                Assert.Equal("8/63", match[MarkMatchBuilder.MARK_OPT]);
+                Assert.Equal("8/10", match[MarkMatchBuilder.MARK_OPT]);
                 System.Console.WriteLine(rule);
             }
-            "iptables -D INPUT -m mark --mark 8/63 -j ACCEPT".Bash();
+            "iptables -D INPUT -m mark --mark 8/10 -j ACCEPT".Bash();
             "iptables -A INPUT -m mark ! --mark 8 -j ACCEPT".Bash();
             using (var wr = new IO.IptWrapper())
             {

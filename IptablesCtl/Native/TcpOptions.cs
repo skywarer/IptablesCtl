@@ -18,5 +18,13 @@ namespace IptablesCtl.Native
         [MarshalAs(UnmanagedType.ByValArray, SizeConst=2)]
         public ushort[] dpts;
         public byte options,flg_mask,flg_cmp,invflags;
+
+        public static TcpOptions Default()
+        {
+            TcpOptions options = new TcpOptions();
+            options.spts = new ushort[] {ushort.MinValue, ushort.MaxValue};
+            options.dpts = new ushort[] {ushort.MinValue, ushort.MaxValue};
+            return options;
+        }
     }
 };

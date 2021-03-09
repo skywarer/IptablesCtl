@@ -118,7 +118,7 @@ namespace IptablesCtl.Models.Builders
         {
             Target snat = Build();
             NatOptions options = new NatOptions();
-            options.ranges = new NatRange[] {new NatRange()};
+            options.ranges = new NatRange[] { NatRange.Default() };
             options.range_size = 1;
             if (snat.TryGetValue(TO_SOURCE_OPT, out var src))
             {
@@ -127,12 +127,11 @@ namespace IptablesCtl.Models.Builders
                 options.ranges[0].max_ip = ReverceEndian(range.maxIp);
                 options.ranges[0].min_proto = ReverceEndian(range.minP);
                 options.ranges[0].max_proto = ReverceEndian(range.maxP);
-                if (options.ranges[0].min_ip > 0)
+                if (options.ranges[0].min_ip > 0 || options.ranges[0].max_ip < uint.MaxValue)
                 {
                     options.ranges[0].flags |= NatRange.NF_NAT_RANGE_MAP_IPS;
                 }
-
-                if (options.ranges[0].min_proto > 0)
+                if (options.ranges[0].min_proto > 0 || options.ranges[0].max_proto < ushort.MaxValue)
                 {
                     options.ranges[0].flags |= NatRange.NF_NAT_RANGE_PROTO_SPECIFIED;
                 }

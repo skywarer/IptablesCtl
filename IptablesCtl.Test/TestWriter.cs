@@ -18,8 +18,10 @@ namespace IptablesCtl.Test
 
             "iptables -t nat -F INPUT".Bash();
             "iptables -t nat -F OUTPUT".Bash();
-            "iptables -t nat -F FORWARD".Bash();
+            "iptables -t nat -F PREROUTING".Bash();
             "iptables -t nat -F POSTROUTING".Bash();
+
+            "iptables -t mangle -F INPUT".Bash();
         }
 
         [Fact]
@@ -44,7 +46,7 @@ namespace IptablesCtl.Test
             System.Console.WriteLine(rule);
             using (var wr = new IptWrapper(Tables.FILTER))
             {
-                wr.AppendRule("Chains.INPUT", rule);
+                wr.AppendRule("INPUT", rule);
                 var rules = wr.GetRules(Chains.INPUT);
                 rule = rules.First();
                 System.Console.WriteLine(rule);
@@ -80,6 +82,28 @@ namespace IptablesCtl.Test
                 System.Console.WriteLine(rule);
                 Assert.NotEmpty(rules);
                 Assert.Equal("192.168.1.1-192.168.1.10:200-300", target[SNatTargetBuilder.TO_SOURCE_OPT]);
+                Assert.Equal(TargetTypes.SNAT, target.Name);
+            }
+            "iptables -t nat -F POSTROUTING".Bash();
+            snatTarget = new SNatTargetBuilder().SetSource("192.168.10.1", "192.168.10.1", 200, 300).Build();
+            rule = new RuleBuilder()
+                .SetIp4Src("192.168.3.2/23")
+                .SetIp4Dst("192.168.3/24")
+                .SetInInterface("eno8")
+                .SetOutInterface("eno45", true, true)
+                .SetProto("tCp")
+                .SetTarget(snatTarget)
+                .Build();
+            System.Console.WriteLine(rule);
+            using (var wr = new IptWrapper(Tables.NAT))
+            {
+                wr.AppendRule(Chains.POSTROUTING, rule);
+                var rules = wr.GetRules(Chains.POSTROUTING);
+                rule = rules.First();
+                var target = rule.Target;
+                System.Console.WriteLine(rule);
+                Assert.NotEmpty(rules);
+                Assert.Equal("192.168.10.1:200-300", target[SNatTargetBuilder.TO_SOURCE_OPT]);
                 Assert.Equal(TargetTypes.SNAT, target.Name);
             }
         }
@@ -161,6 +185,54 @@ namespace IptablesCtl.Test
                 System.Console.WriteLine(rule);
                 Assert.NotEmpty(rules);
                 Assert.Equal("192.168.1.1-192.168.1.10:200-300", target[DNatTargetBuilder.TO_DESTINATION_OPT]);
+                Assert.NotNull(target[DNatTargetBuilder.RANDOM_OPT]);
+                Assert.Equal(TargetTypes.DNAT, target.Name);
+            }
+            "iptables -t nat -F PREROUTING".Bash();
+            dnatTarget = new DNatTargetBuilder().SetDestination("192.168.10.1", "192.168.10.1", 200, 300)
+                .SetRandom().Build();
+            rule = new RuleBuilder()
+                .SetIp4Src("192.168.3.2/23")
+                .SetIp4Dst("192.168.3/24")
+                .SetInInterface("eno8")
+                .SetOutInterface("eno45", true, true)
+                .SetProto("tCp")
+                .SetTarget(dnatTarget)
+                .Build();
+            System.Console.WriteLine(rule);
+            using (var wr = new IptWrapper(Tables.NAT))
+            {
+                wr.AppendRule(Chains.PREROUTING, rule);
+                var rules = wr.GetRules(Chains.PREROUTING);
+                rule = rules.First();
+                var target = rule.Target;
+                System.Console.WriteLine(rule);
+                Assert.NotEmpty(rules);
+                Assert.Equal("192.168.10.1:200-300", target[DNatTargetBuilder.TO_DESTINATION_OPT]);
+                Assert.NotNull(target[DNatTargetBuilder.RANDOM_OPT]);
+                Assert.Equal(TargetTypes.DNAT, target.Name);
+            }
+            "iptables -t nat -F PREROUTING".Bash();
+            dnatTarget = new DNatTargetBuilder().SetDestinationWithProto(200, 300)
+                .SetRandom().Build();
+            rule = new RuleBuilder()
+                .SetIp4Src("192.168.3.2/23")
+                .SetIp4Dst("192.168.3/24")
+                .SetInInterface("eno8")
+                .SetOutInterface("eno45", true, true)
+                .SetProto("tCp")
+                .SetTarget(dnatTarget)
+                .Build();
+            System.Console.WriteLine(rule);
+            using (var wr = new IptWrapper(Tables.NAT))
+            {
+                wr.AppendRule(Chains.PREROUTING, rule);
+                var rules = wr.GetRules(Chains.PREROUTING);
+                rule = rules.First();
+                var target = rule.Target;
+                System.Console.WriteLine(rule);
+                Assert.NotEmpty(rules);
+                Assert.Equal(":200-300", target[DNatTargetBuilder.TO_DESTINATION_OPT]);
                 Assert.NotNull(target[DNatTargetBuilder.RANDOM_OPT]);
                 Assert.Equal(TargetTypes.DNAT, target.Name);
             }
@@ -366,6 +438,30 @@ namespace IptablesCtl.Test
                 Assert.NotEmpty(rules);
                 Assert.Equal(TargetTypes.ACCEPT, target.Name);
             }
+            "iptables -F FORWARD".Bash();
+            udpMatch = new UdpMatchBuilder().SetSrcPort(200, 300).Build();
+            rule = new RuleBuilder()
+                .SetIp4Src("192.168.5.2/23")
+                .SetIp4Dst("192.168.5/24")
+                .SetInInterface("eno8")
+                .SetOutInterface("eno45", true, true)
+                .SetProto("udp")
+                .AddMatch(udpMatch)
+                .Accept();
+            System.Console.WriteLine(rule);
+            using (var wr = new IptWrapper(Tables.FILTER))
+            {
+                wr.AppendRule(Chains.FORWARD, rule);
+                var rules = wr.GetRules(Chains.FORWARD);
+                rule = rules.First();
+                System.Console.WriteLine(rule);
+                var match = rule.Matches.First();
+                Assert.Equal("200:300", match[UdpMatchBuilder.SPORT_OPT]);
+                Assert.False(match.ContainsKey(UdpMatchBuilder.DPORT_OPT));
+                var target = rule.Target;
+                Assert.NotEmpty(rules);
+                Assert.Equal(TargetTypes.ACCEPT, target.Name);
+            }
         }
 
         [Fact]
@@ -440,7 +536,7 @@ namespace IptablesCtl.Test
         [Fact]
         public void WriteMarkMatch()
         {
-            var markMatch = new MarkMatchBuilder().SetMark(8, 63).Build();
+            var markMatch = new MarkMatchBuilder().SetMark(8, 4).Build();
             var rule = new RuleBuilder()
                 .AddMatch(markMatch)
                 .Accept();
@@ -452,7 +548,25 @@ namespace IptablesCtl.Test
                 rule = rules.First();
                 System.Console.WriteLine(rule);
                 var match = rule.Matches.First();
-                Assert.Equal("8/63", match[MarkMatchBuilder.MARK_OPT]);
+                Assert.Equal("8/4", match[MarkMatchBuilder.MARK_OPT]);
+                var target = rule.Target;
+                Assert.NotEmpty(rules);
+                Assert.Equal(TargetTypes.ACCEPT, target.Name);
+            }
+            "iptables -t mangle -F INPUT".Bash();
+            markMatch = new MarkMatchBuilder().SetMark(8).Build();
+            rule = new RuleBuilder()
+                .AddMatch(markMatch)
+                .Accept();
+            System.Console.WriteLine(rule);
+            using (var wr = new IptWrapper(Tables.MANGLE))
+            {
+                wr.AppendRule(Chains.INPUT, rule);
+                var rules = wr.GetRules(Chains.INPUT);
+                rule = rules.First();
+                System.Console.WriteLine(rule);
+                var match = rule.Matches.First();
+                Assert.Equal("8", match[MarkMatchBuilder.MARK_OPT]);
                 var target = rule.Target;
                 Assert.NotEmpty(rules);
                 Assert.Equal(TargetTypes.ACCEPT, target.Name);

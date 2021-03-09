@@ -63,7 +63,7 @@ namespace IptablesCtl.Models.Builders
         {
             Target msqrd = Build();
             NatOptions options = new NatOptions();
-            options.ranges = new NatRange[] {new NatRange()};
+            options.ranges = new NatRange[] {NatRange.Default()};
             options.range_size = 1;
             if (msqrd.TryGetValue(TO_PORTS_OPT, out var src))
             {

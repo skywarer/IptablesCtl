@@ -26,7 +26,7 @@ namespace IptablesCtl.Models
         {
             prop = prop.TrimEnd(delim);
             var inx = prop.LastIndexOf(delim);
-            return inx > 0 ?
+            return inx > -1 ?
                 new MaskedProperty(prop.Substring(0, inx), prop.Substring(inx + 1), delim)
                 : new MaskedProperty(prop, defMask, delim);
         }
@@ -54,24 +54,30 @@ namespace IptablesCtl.Models
 
         public static (uint minIp, uint maxIp, ushort minP, ushort maxP) ToIpProtoRange(this string prop)
         {
-            uint minIp = 0, maxIp = 0;
-            ushort minP = 0, maxP = 0;
+            uint minIp = 0, maxIp = uint.MaxValue;
+            ushort minP = ushort.MinValue, maxP = ushort.MaxValue;
             var srcMask = prop.ToMaskedProperty(':');
             // ip range
-            var sortedIp = srcMask.Value.Split('-').Where(v => !string.IsNullOrEmpty(v))
-                .Select(v => v.ParseIpv4()).OrderBy(v => v).ToArray();
-            if (sortedIp.Any())
+            if (!string.IsNullOrWhiteSpace(srcMask.Value))
             {
-                minIp = sortedIp[0];
-                maxIp = sortedIp.Length > 1 ? sortedIp[1] : sortedIp[0];
+                var sortedIp = srcMask.Value.Split('-').Where(v => !string.IsNullOrEmpty(v))
+                                .Select(v => v.ParseIpv4()).OrderBy(v => v).ToArray();
+                if (sortedIp.Any())
+                {
+                    minIp = sortedIp[0];
+                    maxIp = sortedIp.Length > 1 ? sortedIp[1] : sortedIp[0];
+                }
             }
             // proto range
-            var sortedProto = srcMask.Mask.Split('-')
-                .Select(v => ushort.Parse(v)).OrderBy(v => v).ToArray();
-            if (sortedProto.Any())
+            if (!string.IsNullOrWhiteSpace(srcMask.Mask))
             {
-                minP = sortedProto[0];
-                maxP = sortedProto.Length > 1 ? sortedProto[1] : minP;
+                var sortedProto = srcMask.Mask.Split('-')
+                    .Select(v => ushort.Parse(v)).OrderBy(v => v).ToArray();
+                if (sortedProto.Any())
+                {
+                    minP = sortedProto[0];
+                    maxP = sortedProto.Length > 1 ? sortedProto[1] : minP;
+                }
             }
             return (minIp, maxIp, minP, maxP);
         }

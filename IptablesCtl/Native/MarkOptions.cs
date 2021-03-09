@@ -9,5 +9,12 @@ namespace IptablesCtl.Native
         public const byte XT_MARK_INV = 0x01;
         public uint mark, mask;
         public byte invert;
+
+        public static MarkOptions Default()
+        {
+            MarkOptions options = new MarkOptions();
+            options.mask = 63;
+            return options;
+        }
     }
 };

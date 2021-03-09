@@ -7,8 +7,17 @@ namespace IptablesCtl.Test
 {
     public class TestProperties
     {
+
         [Fact]
-        public void TestMaskedProperties()
+        public void ToIpProtoRange()
+        {
+            Assert.Equal("192.156.2.3".ParseIpv4(),"192.156.2.3:20".ToIpProtoRange().minIp);
+            Assert.Equal(uint.MaxValue,":20".ToIpProtoRange().maxIp);
+            Assert.Equal(ushort.MaxValue,"192.156.2.3-192.156.2.33".ToIpProtoRange().maxP);
+        }
+
+        [Fact]
+         public void TestMaskedProperties()
         {
             Assert.Equal("192.156.2.3", "192.156.2.3".ToMaskedProperty('/').Value);
             Assert.Equal("192.156.2.3", "192.156.2.3/".ToMaskedProperty('/').Value);

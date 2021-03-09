@@ -38,12 +38,12 @@ namespace IptablesCtl.Models.Builders
         public override void SetOptions(TcpOptions options)
         {
             //source-port
-            if (options.spts[0] > 0)
+            if (options.spts[0] > 0 || options.spts[1] < ushort.MaxValue)
             {
                 SetSrcPort(options.spts[0], options.spts[1], (options.invflags & TcpOptions.XT_TCP_INV_SRCPT) > 0);
             }
             //destination-port
-            if (options.dpts[0] > 0)
+            if (options.dpts[0] > 0 || options.dpts[1] < ushort.MaxValue)
             {
                 SetDstPort(options.dpts[0], options.dpts[1], (options.invflags & TcpOptions.XT_TCP_INV_DSTPT) > 0);
             }
@@ -119,12 +119,20 @@ namespace IptablesCtl.Models.Builders
                 opt.spts = new ushort[] { ushort.Parse(range.Left), ushort.Parse(range.Rigt) };
                 if (options.Inverted) opt.invflags |= TcpOptions.XT_TCP_INV_SRCPT;
             }
+            else
+            {
+                opt.spts = new ushort[]{ushort.MinValue, ushort.MaxValue};
+            }
             //destination-port
             if (match.TryGetOption(DPORT_OPT, out options))
             {
                 var range = options.Value.ToRangeProperty(':');
                 opt.dpts = new ushort[] { ushort.Parse(range.Left), ushort.Parse(range.Rigt) };
                 if (!match.ContainsKey(DPORT_OPT)) opt.invflags |= TcpOptions.XT_TCP_INV_DSTPT;
+            }
+            else
+            {
+                opt.dpts = new ushort[]{ushort.MinValue, ushort.MaxValue};
             }
             //tcp-flags
             if (match.TryGetOption(TCP_FLAGS_OPT, out options))

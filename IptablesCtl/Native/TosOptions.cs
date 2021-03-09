@@ -10,5 +10,12 @@ namespace IptablesCtl.Native
         public const byte XT_TOS_INV = 0x01;        
         
         public byte mask,value,invert;
+
+        public static TosOptions Default()
+        {
+            TosOptions options = new TosOptions();
+            options.mask = byte.MaxValue;
+            return options;
+        }
     }
 };
