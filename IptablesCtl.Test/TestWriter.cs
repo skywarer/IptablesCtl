@@ -4,7 +4,6 @@ using Xunit;
 using IptablesCtl.IO;
 using IptablesCtl.Models;
 using IptablesCtl.Models.Builders;
-using System.Runtime.InteropServices;
 
 namespace IptablesCtl.Test
 {
