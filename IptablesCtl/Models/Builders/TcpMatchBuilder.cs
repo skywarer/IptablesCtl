@@ -111,7 +111,7 @@ namespace IptablesCtl.Models.Builders
         public override TcpOptions BuildNative()
         {
             var match = Build();
-            TcpOptions opt = new TcpOptions();
+            TcpOptions opt = TcpOptions.Default();
             //source-port
             if (match.TryGetOption(SPORT_OPT, out var options))
             {
@@ -119,20 +119,12 @@ namespace IptablesCtl.Models.Builders
                 opt.spts = new ushort[] { ushort.Parse(range.Left), ushort.Parse(range.Rigt) };
                 if (options.Inverted) opt.invflags |= TcpOptions.XT_TCP_INV_SRCPT;
             }
-            else
-            {
-                opt.spts = new ushort[]{ushort.MinValue, ushort.MaxValue};
-            }
             //destination-port
             if (match.TryGetOption(DPORT_OPT, out options))
             {
                 var range = options.Value.ToRangeProperty(':');
                 opt.dpts = new ushort[] { ushort.Parse(range.Left), ushort.Parse(range.Rigt) };
                 if (!match.ContainsKey(DPORT_OPT)) opt.invflags |= TcpOptions.XT_TCP_INV_DSTPT;
-            }
-            else
-            {
-                opt.dpts = new ushort[]{ushort.MinValue, ushort.MaxValue};
             }
             //tcp-flags
             if (match.TryGetOption(TCP_FLAGS_OPT, out options))
