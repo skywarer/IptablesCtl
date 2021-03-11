@@ -75,6 +75,8 @@ namespace IptablesCtl.Models.Builders
         IDictionary<string, Match> _matches;
         Target _target;
 
+        ulong bytes, packages;
+
         public RuleBuilder()
         {
             _matches = new Dictionary<string, Match>();
@@ -144,6 +146,9 @@ namespace IptablesCtl.Models.Builders
             {
                 SetFragment((options.ip.invflags & IptIp.IPT_INV_FRAG) > 0);
             }
+            // counters
+            bytes = options.counters.byte_cnt;
+            packages = options.counters.pkt_cnt;
         }
 
         public RuleBuilder SetInInterface(string name, bool isWildCard = false, bool invert = false)
@@ -171,7 +176,7 @@ namespace IptablesCtl.Models.Builders
             {
                 throw new ArgumentException(nameof(cidr));
             }
-            AddProperty(key, cidr);            
+            AddProperty(key, cidr);
             return this;
         }
 
@@ -245,7 +250,7 @@ namespace IptablesCtl.Models.Builders
 
         public override Rule Build()
         {
-            return new Rule(Properties, _matches.Values.ToList(), _target);
+            return new Rule(Properties, _matches.Values.ToList(), _target, bytes, packages);
         }
 
         public override IptEntry BuildNative()
