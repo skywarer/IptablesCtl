@@ -15,9 +15,9 @@ namespace IptablesCtl.Models
         public Target Target { get; }
 
         [JsonIgnore]
-        public ulong Bytes {get;}
+        public ulong Bytes { get; }
         [JsonIgnore]
-        public ulong Packages {get;}
+        public ulong Packages { get; }
 
         public Rule() : base(ImmutableDictionary<string, string>.Empty)
         {
@@ -31,10 +31,10 @@ namespace IptablesCtl.Models
         }
 
         public Rule(IDictionary<string, string> prop, IList<Match> matches, Target target, ulong bts, ulong pkgs) :
-            this(prop,matches,target)
+            this(prop, matches, target)
         {
-           Bytes = bts;
-           Packages = pkgs;
+            Bytes = bts;
+            Packages = pkgs;
         }
 
         public override string ToString()
