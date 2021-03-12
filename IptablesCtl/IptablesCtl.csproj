@@ -5,11 +5,11 @@
     <LangVersion>default</LangVersion>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Version>0.1.2</Version>
+    <Version>0.1.3</Version>
     <Authors>Styagkin Ilya</Authors>
     <Company />
     <Description>Management iptables via the implementation libip4tc</Description>
-    <PackageReleaseNotes>Beta version: bytes and packages counter at Rule</PackageReleaseNotes>
+    <PackageReleaseNotes>Beta version: fix lib name to libip4tc.so.0</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   
