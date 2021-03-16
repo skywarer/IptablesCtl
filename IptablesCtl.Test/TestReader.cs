@@ -8,14 +8,30 @@ namespace IptablesCtl.Test
     public class TestReader
     {
         public TestReader()
-        {
+        {            
             "iptables -F INPUT".Bash();
             "iptables -F OUTPUT".Bash();
             "iptables -F FORWARD".Bash();
             "iptables -t nat -F INPUT".Bash();
             "iptables -t nat -F OUTPUT".Bash();
             "iptables -t nat -F FORWARD".Bash();
-            "iptables -t nat -F POSTROUTING".Bash();
+            "iptables -t nat -F POSTROUTING".Bash();            
+        }
+
+        [Fact]
+        public void GetBytesTest()
+        {
+            using (var wr = new IO.IptTransaction())
+            {
+                var rules = wr.GetRules(IO.Chains.FORWARD);
+                Assert.NotEmpty(rules);
+                Assert.Equal("tcp", rules.First()[RuleBuilder.PROTOCOL_OPT]);
+                System.Console.WriteLine(rules.First());
+                foreach(var r in rules)
+                {
+                    System.Console.WriteLine(r.Bytes);
+                }
+            }
         }
 
         [Fact]

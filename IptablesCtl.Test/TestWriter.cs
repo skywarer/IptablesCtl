@@ -46,6 +46,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction(Tables.FILTER))
             {
                 wr.AppendRule("INPUT", rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.INPUT);
                 rule = rules.First();
                 System.Console.WriteLine(rule);
@@ -75,6 +76,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.AppendRule(Chains.POSTROUTING, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.POSTROUTING);
                 rule = rules.First();
                 var target = rule.Target;
@@ -97,6 +99,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.AppendRule(Chains.POSTROUTING, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.POSTROUTING);
                 rule = rules.First();
                 var target = rule.Target;
@@ -124,6 +127,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.AppendRule(Chains.OUTPUT, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.OUTPUT);
                 rule = rules.First();
                 var target = rule.Target;
@@ -151,6 +155,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction())
             {
                 wr.AppendRule(Chains.OUTPUT, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.OUTPUT);
                 rule = rules.First();
                 var target = rule.Target;
@@ -178,6 +183,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.AppendRule(Chains.PREROUTING, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.PREROUTING);
                 rule = rules.First();
                 var target = rule.Target;
@@ -202,6 +208,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.AppendRule(Chains.PREROUTING, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.PREROUTING);
                 rule = rules.First();
                 var target = rule.Target;
@@ -226,6 +233,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.AppendRule(Chains.PREROUTING, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.PREROUTING);
                 rule = rules.First();
                 var target = rule.Target;
@@ -254,6 +262,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.AppendRule(Chains.POSTROUTING, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.POSTROUTING);
                 rule = rules.First();
                 var target = rule.Target;
@@ -282,6 +291,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction())
             {
                 wr.AppendRule(Chains.INPUT, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.INPUT);
                 rule = rules.First();
                 var target = rule.Target;
@@ -310,6 +320,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.AppendRule(Chains.POSTROUTING, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.POSTROUTING);
                 rule = rules.First();
                 System.Console.WriteLine(rule);
@@ -355,6 +366,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.AppendRule(Chains.POSTROUTING, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.POSTROUTING);
                 rule = rules.First();
                 var match = rule.Matches.First();
@@ -366,6 +378,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.ReplaceRule(Chains.POSTROUTING, 1, rule2);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.POSTROUTING);
                 rule2 = rules.First();
                 var match = rule2.Matches.First();
@@ -393,6 +406,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.AppendRule(Chains.POSTROUTING, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.POSTROUTING);
                 rule = rules.First();
                 var match = rule.Matches.First();
@@ -405,6 +419,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction(Tables.NAT))
             {
                 wr.DeleteRule(Chains.POSTROUTING, 1);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.POSTROUTING);
                 Assert.Empty(rules);
             }
@@ -427,6 +442,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction(Tables.FILTER))
             {
                 wr.AppendRule(Chains.FORWARD, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.FORWARD);
                 rule = rules.First();
                 System.Console.WriteLine(rule);
@@ -451,6 +467,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction(Tables.FILTER))
             {
                 wr.AppendRule(Chains.FORWARD, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.FORWARD);
                 rule = rules.First();
                 System.Console.WriteLine(rule);
@@ -475,6 +492,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction(Tables.FILTER))
             {
                 wr.AppendRule(Chains.FORWARD, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.FORWARD);
                 rule = rules.First();
                 System.Console.WriteLine(rule);
@@ -498,6 +516,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction(Tables.FILTER))
             {
                 wr.AppendRule(Chains.FORWARD, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.FORWARD);
                 rule = rules.First();
                 System.Console.WriteLine(rule);
@@ -521,6 +540,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction(Tables.FILTER))
             {
                 wr.AppendRule(Chains.FORWARD, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.FORWARD);
                 rule = rules.First();
                 System.Console.WriteLine(rule);
@@ -543,6 +563,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction(Tables.MANGLE))
             {
                 wr.AppendRule(Chains.INPUT, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.INPUT);
                 rule = rules.First();
                 System.Console.WriteLine(rule);
@@ -561,6 +582,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction(Tables.MANGLE))
             {
                 wr.AppendRule(Chains.INPUT, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.INPUT);
                 rule = rules.First();
                 System.Console.WriteLine(rule);
@@ -585,6 +607,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction())
             {
                 wr.AppendRule(Chains.INPUT, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.INPUT);
                 rule = rules.First();
                 System.Console.WriteLine(rule);
@@ -611,6 +634,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction())
             {
                 wr.AppendRule(Chains.OUTPUT, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.OUTPUT);
                 rule = rules.First();
                 System.Console.WriteLine(rule);
@@ -637,6 +661,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction())
             {
                 wr.AppendRule(Chains.OUTPUT, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.OUTPUT);
                 rule = rules.First();
                 System.Console.WriteLine(rule);
@@ -661,6 +686,7 @@ namespace IptablesCtl.Test
             using (var wr = new IptTransaction())
             {
                 wr.AppendRule(Chains.OUTPUT, rule);
+                wr.Commit();
                 var rules = wr.GetRules(Chains.OUTPUT);
                 rule = rules.First();
                 System.Console.WriteLine(rule);

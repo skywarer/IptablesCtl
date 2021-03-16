@@ -29,8 +29,8 @@ namespace IptablesCtl.Models.Builders
             var range = options.ranges[0];
             var minIp = range.min_ip > 0 ? ReverceEndian(range.min_ip) : 0;
             var maxIp = range.max_ip > 0 ? ReverceEndian(range.max_ip) : 0;
-            ushort minP = range.min_proto > 0 ? ReverceEndian(range.min_proto) : 0;
-            ushort maxP = range.max_proto > 0 ? ReverceEndian(range.max_proto) : 0;
+            ushort minP = range.min_proto > 0 ? ReverceEndian(range.min_proto) : (ushort)0;
+            ushort maxP = range.max_proto > 0 ? ReverceEndian(range.max_proto) : (ushort)0;
             var rangeDef = ((range.flags & NatRange.NF_NAT_RANGE_MAP_IPS) > 0,
                 (range.flags & NatRange.NF_NAT_RANGE_PROTO_SPECIFIED) > 0);
             switch (rangeDef)
