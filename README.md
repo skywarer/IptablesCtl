@@ -36,7 +36,7 @@ using (var wr = new IptTransaction(Tables.NAT))
     wr.Commit();
 }
 ```
-You can add some rules to table before commiting. Only one commit per IptTransaction is awailable.
+You can add some rules to table before commiting. Only one commit per IptTransaction is available.
 ## Iptrule read operation from Table/Chain
 ``` csharp
 using (var wr = new IO.IptTransaction())
