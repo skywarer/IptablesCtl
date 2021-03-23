@@ -1,8 +1,8 @@
 # IptablesCtl
 A library for control iptables rule via libiptc directly
 # Tutorial
-Rule, Match and Target is basic concepts of this library. Every model contains options collection.
-Iptables rule (iptrule) has some options, like protocol and interface, match collection and target.
+Rule, Match and Target is basic concepts of this library. Every model contains а collection of options.
+Iptables rule (iptrule) has some options, like protocol and interface, collection of matches and target.
 Iptrule building starts with Rule model
 ``` csharp
 var rule = new RuleBuilder()
@@ -36,7 +36,7 @@ using (var wr = new IptTransaction(Tables.NAT))
     wr.Commit();
 }
 ```
-You can add some rules to table before commit operation calling. Only one commit per IptTransaction awailable.
+You can add some rules to table before commiting. Only one commit per IptTransaction is awailable.
 ## Iptrule read operation from Table/Chain
 ``` csharp
 using (var wr = new IO.IptTransaction())
@@ -44,7 +44,7 @@ using (var wr = new IO.IptTransaction())
     var rules = wr.GetRules(IO.Chains.INPUT);
 }
 ```
-All models stores its options as dictionary. Options key/value format is like to Iptables style
+All models stores it`s options as a dictionary. Option`s key/value format is similar to Iptables style
 ``` csharp
 var tcpMatch = new TcpMatchBuilder().SetSrcPort(200, 300)
     .SetFlags(new[] { "syn", "fin", "ack" }, new[] { "syn" })
@@ -72,10 +72,10 @@ System.Console.WriteLine(ruleJson);
 # {"Matches":[{"Name":"tcp","NeedKey":false,"Revision":0,"Options":{"--sport":"1000","--dport":"1002"}}],"Target":{"Name":"ACCEPT","Revision":0},"Options":{"-p":"tcp"}}
 ```
 ## Extention
-If some match or target types isn`t represented in basic collection, it can be added yourself. Example with CommentMatch locate at project code.
-All struct can be found at [netfilter](http://charette.no-ip.com:81/programming/doxygen/netfilter/index.html) source code.
+If some match or target types doesn`t represented in the basic collection, it can be added by yourself. Example with CommentMatch is located at the project code.
+All the native structs can be found at [netfilter](http://charette.no-ip.com:81/programming/doxygen/netfilter/index.html) source code.
 ## Dockerfile
-IptablesCtl tested with Ubuntu 18.04 and also can be include to dockerized net.core project. 
+IptablesCtl has been tested with Ubuntu 18.04 and also can be included to dockerized net.core project. 
 ``` dockerfile
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 RUN apt update && apt install iptables -y
