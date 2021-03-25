@@ -1,5 +1,5 @@
 # IptablesCtl
-A library for control iptables rule via libiptc directly
+[IPTable](https://en.wikipedia.org/wiki/Iptables) rules manager via [libiptc](https://www.opennet.ru/docs/HOWTO/Querying-libiptc-HOWTO/whatis.html) directly. NetCore 3.1 library.
 # Tutorial
 Rule, Match and Target is basic concepts of this library. Every model contains а collection of options.
 Iptables rule (iptrule) has some options, like protocol and interface, collection of matches and target.
@@ -76,8 +76,20 @@ If some match or target types doesn`t represented in the basic collection, it ca
 All the native structs can be found at [netfilter](http://charette.no-ip.com:81/programming/doxygen/netfilter/index.html) source code.
 ## Dockerfile
 IptablesCtl has been tested with Ubuntu 18.04 and also can be included to dockerized net.core project. 
+
+Dockerfile
 ``` dockerfile
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 RUN apt update && apt install iptables -y
 ```
 Add capabilites --cap-add NET_ADMIN to run command and expose port range for tcp/udp rules
+
+docker-compose.yml
+``` yml
+...
+    cap_add:
+      - NET_ADMIN
+...
+```
+
+
